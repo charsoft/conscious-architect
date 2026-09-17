@@ -1,0 +1,4 @@
+google-cloud-firestore>=2.16.0
+yt-dlp>=2025.1.0
+pandas>=2.2.0
+numpy>=1.26.0

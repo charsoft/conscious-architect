@@ -1,0 +1,67 @@
+name: Deploy Conscious Architect to Cloud Run
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: gen-lang-client-0182092372
+  REGION: us-central1
+  SERVICE: conscious-architect
+  REPOSITORY: cloud-run-source-deploy
+  IMAGE: us-central1-docker.pkg.dev/gen-lang-client-0182092372/cloud-run-source-deploy/conscious-architect
+  WIF_PROVIDER: projects/467763028674/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+  WIF_SERVICE_ACCOUNT: github-deploy-sa@gen-lang-client-0182092372.iam.gserviceaccount.com
+  RUNTIME_SERVICE_ACCOUNT: 467763028674-compute@developer.gserviceaccount.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auth to Google Cloud via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker Auth for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build & Tag Container Image
+        run: |
+          docker build -t "${{ env.IMAGE }}:${{ github.sha }}" -t "${{ env.IMAGE }}:latest" .
+
+      - name: Push Image to Artifact Registry
+        run: |
+          docker push "${{ env.IMAGE }}:${{ github.sha }}"
+          docker push "${{ env.IMAGE }}:latest"
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image "${{ env.IMAGE }}:${{ github.sha }}" \
+            --project "${{ env.PROJECT_ID }}" \
+            --region "${{ env.REGION }}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --service-account "${{ env.RUNTIME_SERVICE_ACCOUNT }}" \
+            --set-env-vars "GCP_PROJECT_ID=${{ env.PROJECT_ID }}"
+
+      - name: Show Live Service URL
+        run: |
+          gcloud run services describe "${{ env.SERVICE }}" \
+            --project "${{ env.PROJECT_ID }}" \
+            --region "${{ env.REGION }}" \
+            --format='value(status.url)'

@@ -1,0 +1,41 @@
+name: Daily Outlier Sync
+
+on:
+  schedule:
+    # Run every morning at 4:00 AM EDT (08:00 UTC)
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: gen-lang-client-0182092372
+  WIF_PROVIDER: projects/467763028674/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+  WIF_SERVICE_ACCOUNT: github-deploy-sa@gen-lang-client-0182092372.iam.gserviceaccount.com
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auth to Google Cloud via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Daily Outlier Sync
+        run: python scraper.py
