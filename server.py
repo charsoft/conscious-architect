@@ -9,6 +9,7 @@ from google.cloud import firestore
 PORT = int(os.environ.get("PORT", 8080))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0182092372")
+STUDIO_PASSKEY = os.environ.get("STUDIO_PASSKEY", "ConsciousArchitect2026!")
 
 # Initialize Firestore Client
 db = firestore.Client(project=PROJECT_ID)
@@ -17,8 +18,22 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
+    def is_authenticated(self):
+        auth_header = self.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header[7:].strip()
+            return token == STUDIO_PASSKEY
+        return False
+
     def do_GET(self):
         if self.path == '/api/outliers':
+            if not self.is_authenticated():
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Unauthorized'}).encode('utf-8'))
+                return
+
             try:
                 videos_ref = db.collection('trend_videos').order_by('outlierScore', direction=firestore.Query.DESCENDING).limit(50)
                 docs = videos_ref.stream()
@@ -32,6 +47,7 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+
         elif self.path == '/api/health':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -41,7 +57,36 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
-        if self.path == '/api/save':
+        if self.path == '/api/verify-key':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                body = json.loads(post_data.decode('utf-8'))
+                key = body.get('key', '').strip()
+                if key == STUDIO_PASSKEY:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'valid': True, 'email': 'charlene@charsoft.com'}).encode('utf-8'))
+                else:
+                    self.send_response(403)
+                    self.send_header('Content-Type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({'valid': False, 'error': 'Invalid Master Studio Key'}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(400)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+
+        elif self.path == '/api/save':
+            if not self.is_authenticated():
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Unauthorized'}).encode('utf-8'))
+                return
+
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             try:

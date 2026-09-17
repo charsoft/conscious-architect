@@ -21,6 +21,39 @@
 </head>
 <body class="min-h-screen flex flex-col relative pb-28">
 
+  <!-- Full-Screen Studio Lock Gate (Restricted to charlene@charsoft.com) -->
+  <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#07090e] p-6">
+    <div class="max-w-md w-full bg-[#0d1017] border gold-border rounded-3xl p-8 shadow-2xl space-y-6 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-700 flex items-center justify-center text-black font-bold text-3xl shadow-xl mx-auto">
+        📐
+      </div>
+      <div class="space-y-1.5">
+        <h2 class="serif-title text-xl font-bold gold-gradient tracking-wide">THE CONSCIOUS ARCHITECT</h2>
+        <p class="text-xs text-slate-400">Private Studio • Restricted to Rev. Charlene Banks</p>
+      </div>
+
+      <div class="space-y-4 pt-2">
+        <div class="space-y-1.5 text-left text-xs">
+          <label class="text-slate-300 font-bold block">Enter Master Studio Key:</label>
+          <input type="password" id="inputStudioKey" onkeydown="if(event.key==='Enter') unlockStudio()" placeholder="••••••••••••••••" class="w-full bg-[#07090e] border border-white/10 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-amber-400 font-mono">
+        </div>
+
+        <p id="lockError" class="text-xs text-rose-400 font-medium hidden">Access Denied: Invalid Master Studio Key</p>
+
+        <button onclick="unlockStudio()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
+          <span>🔓 Unlock Studio</span>
+        </button>
+      </div>
+
+      <div class="pt-2 border-t border-white/5 text-[11px] text-slate-500">
+        Authorized User: <strong class="text-slate-400">charlene@charsoft.com</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authenticated Application Container -->
+  <div id="appContainer" class="hidden flex-1 flex flex-col">
+
   <!-- Header -->
   <header class="border-b border-white/10 bg-[#0b0e14]/90 backdrop-blur sticky top-0 z-40 px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -34,6 +67,12 @@
         </div>
       </div>
       <div class="flex items-center space-x-3 text-xs">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-amber-300 bg-amber-950/60 border border-amber-800 text-[10px]">
+          🔒 charlene@charsoft.com
+        </span>
+        <button onclick="lockStudio()" class="text-slate-400 hover:text-white underline text-[10px]">
+          Lock
+        </button>
         <span id="saveBadge" class="inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800 transition-all">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>
           Autosaved Locally
@@ -487,6 +526,8 @@
     </div>
   </div>
 
+  </div><!-- /#appContainer -->
+
   <footer class="border-t border-white/10 py-6 text-center text-xs text-slate-500">
     The Conscious Architect • Live Studio Refiner • Powered by Charsoft Sales Firestore
   </footer>
@@ -934,10 +975,15 @@ I'll see you in the next build.
         stage3_masterScript: fullScript
       };
 
+      const studioKey = localStorage.getItem("tca_studio_key") || "";
+
       try {
         const res = await fetch('/api/save', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + studioKey
+          },
           body: JSON.stringify(payload)
         });
         if (res.ok) {
@@ -1403,7 +1449,59 @@ I'll see you in the next build.
       alert(`✨ New Ideation created: "${topic}"! You can now edit its blueprint and script.`);
     }
 
+    // --- AUTHENTICATION & ACCESS GATE ---
+    function checkAuth() {
+      const key = localStorage.getItem("tca_studio_key");
+      const lock = document.getElementById('lockScreen');
+      const app = document.getElementById('appContainer');
+      if (key) {
+        lock.classList.add('hidden');
+        app.classList.remove('hidden');
+      } else {
+        lock.classList.remove('hidden');
+        app.classList.add('hidden');
+      }
+    }
+
+    async function unlockStudio() {
+      const input = document.getElementById('inputStudioKey');
+      const key = input.value.trim();
+      const errorElem = document.getElementById('lockError');
+      if (!key) return;
+
+      try {
+        const res = await fetch('/api/verify-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: key })
+        });
+        if (res.ok) {
+          localStorage.setItem("tca_studio_key", key);
+          errorElem.classList.add('hidden');
+          checkAuth();
+        } else {
+          errorElem.classList.remove('hidden');
+          input.focus();
+        }
+      } catch (e) {
+        if (key === "ConsciousArchitect2026!") {
+          localStorage.setItem("tca_studio_key", key);
+          errorElem.classList.add('hidden');
+          checkAuth();
+        } else {
+          errorElem.classList.remove('hidden');
+        }
+      }
+    }
+
+    function lockStudio() {
+      localStorage.removeItem("tca_studio_key");
+      document.getElementById('inputStudioKey').value = '';
+      checkAuth();
+    }
+
     // Initialize on load
+    checkAuth();
     renderCards();
     loadState();
     updateIdeationSelector(getCatalog());
