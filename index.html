@@ -179,6 +179,28 @@
           </div>
         </div>
 
+        <!-- Integrated Inline Cohort Action Banner (Stage 1 Only) -->
+        <div id="cohortActionBar" class="bg-[#121724] border gold-border rounded-2xl p-4 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
+          <div class="flex items-center space-x-3">
+            <span class="flex h-3 w-3 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+            </span>
+            <div>
+              <div class="text-xs font-bold text-white"><span id="selectedCount">0</span> Outliers Selected for Cohort Blend</div>
+              <div class="text-[11px] text-slate-400" id="selectedNamesPreview">Ready to interrogate as a group</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3 text-xs">
+            <button onclick="clearSelection()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg transition-colors">
+              Clear
+            </button>
+            <button onclick="synthesizeSelectedCohort()" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold rounded-xl shadow transition-all flex items-center space-x-1.5">
+              <span>⚡ Synthesize Cohort Blend (Lego Bricks)</span>
+            </button>
+          </div>
+        </div>
+
         <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
 
@@ -365,28 +387,6 @@
     </div>
 
   </main>
-
-  <!-- Sticky Floating Cohort Action Bar (Stage 1) -->
-  <div id="floatingBar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 bg-[#121724]/95 border gold-border rounded-2xl shadow-2xl backdrop-blur-md px-6 py-3.5 flex items-center space-x-6 transition-all duration-300 opacity-0 pointer-events-none translate-y-6">
-    <div class="flex items-center space-x-3">
-      <span class="flex h-3 w-3 relative">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-      </span>
-      <div>
-        <div class="text-xs font-bold text-white"><span id="selectedCount">0</span> Outliers Selected for Cohort</div>
-        <div class="text-[10px] text-slate-400" id="selectedNamesPreview">Ready to interrogate as a group</div>
-      </div>
-    </div>
-    <div class="flex items-center space-x-3">
-      <button onclick="clearSelection()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 text-xs rounded-lg transition-colors">
-        Clear
-      </button>
-      <button onclick="synthesizeSelectedCohort()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow-lg transition-all flex items-center space-x-2">
-        <span>⚡ Synthesize Cohort Blend (Lego Bricks)</span>
-      </button>
-    </div>
-  </div>
 
   <!-- Slide-Over Inspector Drawer (The Master Cohort Synthesis) -->
   <div id="drawerBackdrop" onclick="closeDrawer()" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
@@ -1100,20 +1100,21 @@ I'll see you in the next build.
     }
 
     function updateFloatingBar() {
-      const bar = document.getElementById('floatingBar');
+      const bar = document.getElementById('cohortActionBar');
+      if (!bar) return;
       const countSpan = document.getElementById('selectedCount');
       const previewSpan = document.getElementById('selectedNamesPreview');
 
-      countSpan.innerText = selectedIds.size;
+      if (countSpan) countSpan.innerText = selectedIds.size;
 
       if (selectedIds.size > 0) {
-        bar.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-6');
+        bar.classList.remove('hidden');
         const selectedTitles = Array.from(selectedIds)
           .map(id => OUTLIER_DATABASE.find(o => o.id === id)?.channel)
           .filter(Boolean);
-        previewSpan.innerText = `Blending: ${selectedTitles.join(' + ')}`;
+        if (previewSpan) previewSpan.innerText = `Blending: ${selectedTitles.join(' + ')}`;
       } else {
-        bar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-6');
+        bar.classList.add('hidden');
       }
     }
 
