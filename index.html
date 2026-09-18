@@ -195,8 +195,11 @@
             <button onclick="clearSelection()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg transition-colors">
               Clear
             </button>
-            <button onclick="synthesizeSelectedCohort()" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold rounded-xl shadow transition-all flex items-center space-x-1.5">
-              <span>⚡ Synthesize Cohort Blend (Lego Bricks)</span>
+            <button onclick="synthesizeSelectedCohort()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl border border-white/20 transition-all flex items-center space-x-1.5">
+              <span>Inspect Cohort Blend</span>
+            </button>
+            <button onclick="regenerateStagesFromCohort()" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold rounded-xl shadow transition-all flex items-center space-x-1.5">
+              <span>⚡ Regenerate Stages 2 &amp; 3</span>
             </button>
           </div>
         </div>
@@ -221,8 +224,11 @@
           <button onclick="resetStage2()" class="px-3 py-2 bg-white/5 hover:bg-white/10 text-slate-300 text-xs rounded-xl border border-white/10 transition-colors">
             🔄 Reset Blueprint
           </button>
-          <button onclick="setStage(3)" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-700 text-black font-bold text-xs rounded-xl shadow transition-all">
-            <span>➔ Edit Teleprompter Script</span>
+          <button onclick="recompileScriptFromStage2()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow transition-all flex items-center space-x-1.5">
+            <span>⚡ Recompile Script (Stage 3)</span>
+          </button>
+          <button onclick="setStage(3)" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded-xl border border-white/20 transition-all">
+            <span>View Script ➔</span>
           </button>
         </div>
       </div>
@@ -1310,6 +1316,91 @@ I'll see you in the next build.
       navigator.clipboard.writeText(fullText).then(() => {
         alert("✅ Full Teleprompter Script copied to clipboard!");
       });
+    }
+
+    // --- REGENERATE & RECOMPILE ENGINES ---
+    function regenerateStagesFromCohort() {
+      if (selectedIds.size === 0) {
+        alert("Please select at least 1 or 2 outliers from the radar first!");
+        return;
+      }
+      const selectedVideos = Array.from(selectedIds)
+        .map(id => OUTLIER_DATABASE.find(o => o.id === id))
+        .filter(Boolean);
+
+      const title = document.querySelector('#stageView-1 h2')?.innerText || "The Real Reason Your AI Prompts (and Intentions) Keep Failing";
+      const channels = selectedVideos.map(v => v.channel).join(', ');
+      const bricks = selectedVideos.map(v => v.brickContribution).join(' ');
+
+      // Synthesize fresh Stage 2 based on the active cohort
+      const newStage2 = {
+        breakout1: `When I was training enterprise teams for Google, I watched brilliant engineers struggle with the exact same thing my congregation struggles with on Sunday. As ${selectedVideos[0]?.channel || 'our peers'} showed, the problem is never the tool—it is our subconscious resistance to being specific.`,
+        breakout2: `Stop getting mad at the mirror. In the words of the ancient spiritual masters, the creative medium reproduces according to law. The algorithm isn't testing you; it's compiling the background fear loops you refuse to shut down.`,
+        breakout3: `You are not an employee of these algorithms. You are the Conscious Architect. Silicon only calculates; you possess Consciousness. Start acting like the creator.`,
+        hook05: `If your AI prompts feel like they're hallucinating generic fluff... or your daily intentions and affirmations feel completely stuck in neutral—the tool isn't broken.`,
+        hook15: `As an official Google Trainer, I’ve taught thousands how to prompt AI. But as a licensed Science of Mind minister, here's what corporate stages never let me tell you...`,
+        hook30: `Both systems run on the exact same universal law: Vague input guarantees chaotic output. In the next 12 minutes, I'm giving you the 3-step prompt architecture that fixes both.`,
+        c1_promise: `Why 90% of people throw up their hands and declare that AI and manifestation are 'overrated.'`,
+        c1_progress: `In AI: typing 'Write an email' yields bland corporate cardboard. In Spirit: telling the universe 'I just want things to be better' gives Divine Mind zero constraints, compiling into generic drift.`,
+        c1_payoff: `Vagueness isn't humility; vagueness is fear of being specific. Once you give your mind clear parameters, the slop stops.`,
+        c2_promise: `How to eliminate the background 'hallucinations' that derail your projects and your peace.`,
+        c2_progress: `In LLMs: models invent plausible-sounding fiction when boundary constraints are missing. In Subconscious: when you launch a goal without negative constraints, your mind fills the vacuum with childhood memories of struggle.`,
+        c2_payoff: `Constraints are not limitations; constraints are the guardrails of reality. In New Thought, this is the spiritual practice of 'Denials.'`,
+        c3_promise: `The single mindset shift that separates amateur prompt users from master architects.`,
+        c3_progress: `The One-Shot Miracle fantasy: rookie users expect one magic prompt to create an app. In Spirit: speaking one affirmation Monday and quitting Tuesday when the check isn't in the mail. Manifestation is an interactive compile dialogue, not a vending machine.`,
+        c3_payoff: `The delay between thought and reality is not a wall; it's the gestation period / compile window. Stop quitting on generation one.`
+      };
+
+      // Save to localStorage
+      localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(newStage2));
+      loadState();
+
+      // Automatically switch to Stage 2 so user sees the refreshed blueprint
+      setStage(2);
+      showSaveBadge(`✨ Stages 2 & 3 regenerated from ${selectedVideos.length} outliers!`);
+      syncToFirestore();
+    }
+
+    function recompileScriptFromStage2() {
+      // Gather current Stage 2 user edits
+      const s2Raw = localStorage.getItem(STORAGE_KEY_STAGE2);
+      const s2 = s2Raw ? JSON.parse(s2Raw) : DEFAULT_STAGE2;
+
+      const updatedScript = [
+        {
+          act: "ACT I: THE HOOK & USP FRONT-LOAD (0:00 - 1:30)",
+          content: `[PACING / MUSIC: Ambient low-fi pulse starts—contemplative, sleek, forward-moving.]\n[VISUAL: Rapid montage: cursor blinking in empty prompt box ➔ smartphone screen with unread affirmation ➔ Charlene on dawn summit.]\n[ON-SCREEN TEXT: "STOP BLAMING THE AI"]\n\nCHARLENE (SPOKEN):\n${s2.hook05}\n\n[PACING / MUSIC: Music drops out for half a beat. Crisp vocal isolation.]\n[VISUAL: Smooth camera push-in. Golden blueprint lines trace across the mist.]\n[ON-SCREEN TEXT: "CHARLENE BANKS | Google Trainer & Science of Mind Minister"]\n\nCHARLENE (SPOKEN):\n${s2.hook15}\n\n[VISUAL: Split-screen graphic: AI prompt box compiling to code ➔ Human silhouette compiling to physical form.]\n[ON-SCREEN TEXT: "VAGUE INPUT = VAGUE REALITY"]\n\nCHARLENE (SPOKEN):\n${s2.hook30}`
+        },
+        {
+          act: "ACT II, CYCLE 1: GARBAGE IN, GARBAGE OUT (1:30 - 4:30)",
+          content: `[PACING / MUSIC: Subtle rhythmic synth layers in; warm, steady educational rhythm.]\n[VISUAL: Graphic of amateur prompt typing: 'Write me a good marketing email.']\n[ON-SCREEN TEXT: "ERROR #1: ASSUMED CONTEXT"]\n\nCHARLENE (SPOKEN):\n${s2.c1_promise}\n\n[PROGRESS / VALUE DELIVERY: GOOGLE TRAINER INSTRUCTION]\n[VISUAL: Cut back to Charlene smiling knowingly.]\n[ON-SCREEN TEXT: "THE 4 PROMPT PILLARS: ROLE • CONTEXT • CONSTRAINTS • OBJECTIVE"]\n\nCHARLENE (SPOKEN):\n${s2.c1_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Bold gold text overlay across the screen.]\n[ON-SCREEN TEXT: "CLARITY IS COURTESY TO THE DIVINE"]\n\nCHARLENE (SPOKEN):\n${s2.c1_payoff}`
+        },
+        {
+          act: "ACT II, CYCLE 2: NEGATIVE CONSTRAINTS & HALLUCINATIONS (4:30 - 7:30)",
+          content: `[PACING / MUSIC: Pacing picks up slightly; light tech percussion.]\n[VISUAL: Graphic of AI output citing fake sources with red error highlights.]\n[ON-SCREEN TEXT: "ERROR #2: THE UNCONSTRAINED VOID"]\n\nCHARLENE (SPOKEN):\n${s2.c2_promise}\n\n[PROGRESS / VALUE DELIVERY: TECHNICAL & METAPHYSICAL RULES]\n[VISUAL: Cut to Charlene. Golden code lines float in space.]\n[ON-SCREEN TEXT: "NEGATIVE CONSTRAINTS = WHAT IS FORBIDDEN"]\n\nCHARLENE (SPOKEN):\n${s2.c2_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Charlene touches her turquoise pendant, smiling.]\n[ON-SCREEN TEXT: "DEFINE THE BOUNDARIES OF YOUR MIND"]\n\nCHARLENE (SPOKEN):\n${s2.c2_payoff}`
+        },
+        {
+          act: "ACT II, CYCLE 3: THE ITERATION DIALOGUE (7:30 - 9:30)",
+          content: `[PACING / MUSIC: Forward-leaning momentum; inspiring and rhythmic.]\n[VISUAL: Simulation: Version 1 (C-) ➔ Parameter Adjustment ➔ Version 3 (Masterpiece).]\n[ON-SCREEN TEXT: "ERROR #3: THE ONE-SHOT FANTASY"]\n\nCHARLENE (SPOKEN):\n${s2.c3_promise}\n\n[PROGRESS / VALUE DELIVERY]\n[VISUAL: Cut to Charlene on the summit, morning light washing over the frame.]\n[ON-SCREEN TEXT: "MANIFESTATION IS AN INTERACTIVE CONVERSATION"]\n\nCHARLENE (SPOKEN):\n${s2.c3_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Golden spiral gently connects to sunrise peaks.]\n[ON-SCREEN TEXT: "THE COMPILE WINDOW"]\n\nCHARLENE (SPOKEN):\n${s2.c3_payoff}`
+        },
+        {
+          act: "ACT III: THE UNFILTERED CLIMAX & SOVEREIGNTY SHIFT (9:30 - 11:30)",
+          content: `[PACING / MUSIC: Intimate, resonant cello and ambient pad. Pure heart space.]\n[VISUAL: Tight, intimate shot of Charlene speaking from sisterly authenticity.]\n[ON-SCREEN TEXT: "A MOMENT OF RAW TRUTH"]\n\nCHARLENE (SPOKEN):\n${s2.breakout1}\n\n${s2.breakout2}\n\n${s2.breakout3}`
+        },
+        {
+          act: "ACT IV: THE 60-SECOND PROTOCOL & CALL TO ACTION (11:30 - END)",
+          content: `[PACING / MUSIC: Inspiring, uplifting crescendo; confident and luminous.]\n[VISUAL: Wide cinematic shot of Charlene on the rock bluff overlooking the sunrise.]\n[ON-SCREEN TEXT: "THE 60-SECOND MORNING PROTOCOL"]\n\nCHARLENE (SPOKEN):\nSo here is your assignment starting tomorrow morning. Before you touch your phone, before you open your laptop:\n\n1. Declare the Role: 'I am operating today as the Conscious Architect of my reality.'\n2. Set the Negative Constraints: 'I refuse to allow the background hallucinations of doubt, scarcity, or yesterday's old fear loops into my mental runtime.'\n3. Stay in the Dialogue: 'I iterate with patience, knowing the law executes what I believe.'\n\n[VISUAL: The Conscious Architect logo badge appears cleanly: Champagne gold and crisp white.]\n[ON-SCREEN TEXT: "SUBSCRIBE • THE CONSCIOUS ARCHITECT WITH CHARLENE BANKS"]\n\nCHARLENE (SPOKEN):\nIf you are ready to master your internal operating system... and learn how to use bleeding-edge AI without ever compromising your spiritual sovereignty... hit the subscribe button right now.\n\nWelcome to The Conscious Architect.\n\nThink deeply. Build boldly. And remember: You are the one writing the code.\n\nI'll see you in the next build.\n\n[PACING / MUSIC: Final warm, resonant chord fades smoothly to silence.]\n[VISUAL: Fade to black with channel banner artwork, subscribe button, and next recommended video card.]`
+        }
+      ];
+
+      // Save to localStorage and re-render Stage 3
+      localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(updatedScript));
+      renderScriptBlocks(updatedScript);
+
+      // Switch to Stage 3 to view the recompiled teleprompter script
+      setStage(3);
+      showSaveBadge("✨ Teleprompter script recompiled with your Stage 2 analogies!");
+      syncToFirestore();
     }
 
     // --- NEW IDEATION CREATOR & MULTI-VIDEO CATALOG ---
