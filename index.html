@@ -897,6 +897,83 @@
       syncToFirestore();
     }
 
+    
+    function handleScriptBlockEdit(index, newContent) {
+      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
+      const s3 = s3Raw ? JSON.parse(s3Raw) : [...DEFAULT_STAGE3];
+      if (s3[index]) {
+        s3[index].content = newContent;
+        localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(s3));
+
+        // Persist into catalog for active ideation
+        const activeId = localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id;
+        const cat = getCatalog();
+        const idx = cat.findIndex(v => v.id === activeId);
+        if (idx !== -1) {
+          cat[idx].stage3 = s3;
+          localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
+        }
+
+        showSaveBadge("✓ Script Autosaved Locally");
+      }
+    }
+
+    function showSaveBadge(text) {
+      const badge = document.getElementById('saveBadge');
+      if (!badge) return;
+      badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping"></span>${text}`;
+      badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-300 bg-emerald-950/80 border border-emerald-500 shadow-sm transition-all";
+      setTimeout(() => {
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>Autosaved Locally`;
+        badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800 transition-all";
+      }, 2000);
+    }
+
+    function resetStage2() {
+      if (confirm("Reset Stage 2 blueprint to default?")) {
+        localStorage.removeItem(STORAGE_KEY_STAGE2);
+        loadState();
+        showSaveBadge("Blueprint Reset");
+      }
+    }
+
+    function resetStage3() {
+      if (confirm("Reset Stage 3 teleprompter script to default?")) {
+        localStorage.removeItem(STORAGE_KEY_STAGE3);
+        loadState();
+        showSaveBadge("Script Reset");
+      }
+    }
+
+    function renderScriptBlocks(scriptData) {
+      const container = document.getElementById('scriptBlocksContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      scriptData.forEach((s, idx) => {
+        const div = document.createElement('div');
+        div.className = "p-6 bg-[#121622] rounded-2xl border border-white/10 space-y-3 shadow-xl";
+        div.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">${s.act}</span>
+            <span class="text-[10px] text-slate-400">Click text to edit</span>
+          </div>
+          <textarea id="script-block-${idx}" oninput="handleScriptBlockEdit(${idx}, this.value)" rows="12" class="w-full bg-[#090c12] border border-white/10 rounded-xl p-4 text-slate-200 text-sm leading-loose font-sans"></textarea>
+        `;
+        container.appendChild(div);
+        document.getElementById(`script-block-${idx}`).value = s.content;
+      });
+    }
+
+    function copyMasterScript() {
+      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
+      const s3 = s3Raw ? JSON.parse(s3Raw) : DEFAULT_STAGE3;
+      const fullText = s3.map(s => `=== ${s.act} ===\n\n${s.content}`).join('\n\n=========================================\n\n');
+      navigator.clipboard.writeText(fullText).then(() => {
+        alert("✅ Full Teleprompter Script copied to clipboard!");
+      });
+    }
+
     function renderCards() {
       const minScore = parseFloat(document.getElementById('scoreFilter').value);
       const container = document.getElementById('cardsGrid');
