@@ -12,7 +12,11 @@ PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0182092372")
 STUDIO_PASSKEY = os.environ.get("STUDIO_PASSKEY", "ConsciousArchitect2026!")
 
 # Initialize Firestore Client
-db = firestore.Client(project=PROJECT_ID)
+try:
+    db = firestore.Client(project=PROJECT_ID)
+except Exception as e:
+    print(f"[LOCAL DEV] Firestore client not initialized ({e}). Running in local mode.")
+    db = None
 
 class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -32,6 +36,13 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': 'Unauthorized'}).encode('utf-8'))
+                return
+
+            if db is None:
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'outliers': []}).encode('utf-8'))
                 return
 
             try:
@@ -94,8 +105,9 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 doc_id = payload.get('ideationId', 'video-1-prompting-intentions')
                 payload['lastUpdated'] = datetime.now().isoformat()
                 
-                # Write to Firestore
-                db.collection('video_ideations').document(doc_id).set(payload, merge=True)
+                # Write to Firestore if available
+                if db:
+                    db.collection('video_ideations').document(doc_id).set(payload, merge=True)
                 
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')

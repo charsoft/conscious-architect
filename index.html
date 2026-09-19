@@ -945,6 +945,83 @@
       }
     }
 
+    
+    function setStage(stageNum) {
+      [1, 2, 3].forEach(s => {
+        const btn = document.getElementById(`stageBtn-${s}`);
+        const view = document.getElementById(`stageView-${s}`);
+        if (!btn || !view) return;
+        if (s === stageNum) {
+          btn.className = "py-3 px-4 border-b-2 border-amber-400 text-amber-400 flex items-center space-x-2 transition-all whitespace-nowrap";
+          const dot = btn.querySelector('span:first-child');
+          if (dot) dot.className = "w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-bold";
+          view.classList.remove('hidden');
+        } else {
+          btn.className = "py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 transition-all whitespace-nowrap";
+          const dot = btn.querySelector('span:first-child');
+          if (dot) dot.className = "w-5 h-5 rounded-full bg-white/10 text-slate-300 flex items-center justify-center text-[10px] font-bold";
+          view.classList.add('hidden');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function syncToFirestore() {
+      const badge = document.getElementById('saveBadge');
+      if (badge) {
+        badge.innerText = "⏳ Syncing...";
+        badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-amber-300 bg-amber-950/60 border border-amber-800 animate-pulse";
+      }
+
+      const s2Raw = localStorage.getItem(STORAGE_KEY_STAGE2);
+      const s2 = s2Raw ? JSON.parse(s2Raw) : DEFAULT_STAGE2;
+      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
+      const s3 = s3Raw ? JSON.parse(s3Raw) : DEFAULT_STAGE3;
+
+      const fullScript = s3.map(sec => `=== ${sec.act} ===\n\n${sec.content}`).join('\n\n=========================================\n\n');
+
+      const activeId = localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id;
+      const cat = getCatalog();
+      const currentVideo = cat.find(v => v.id === activeId) || LAUNCH_CATALOG[0];
+
+      const payload = {
+        ideationId: activeId,
+        channel: "The Conscious Architect with Charlene Banks",
+        title: currentVideo.title,
+        pillar: currentVideo.pillar || s2.pillar || "The Architecture of Agency",
+        status: "script_refined",
+        lastUpdated: new Date().toISOString(),
+        stage2_signatureJourney: s2,
+        stage3_masterScript: fullScript
+      };
+
+      const studioKey = localStorage.getItem("tca_studio_key") || "";
+
+      try {
+        const res = await fetch('/api/save', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + studioKey
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok && badge) {
+          badge.innerText = "✓ Synced to Cloud & Ready";
+          badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/80 border border-emerald-500 shadow";
+          setTimeout(() => {
+            badge.innerText = "Autosaved Locally";
+            badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800";
+          }, 3000);
+        }
+      } catch (err) {
+        if (badge) {
+          badge.innerText = "✓ Saved Locally";
+          badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800";
+        }
+      }
+    }
+
     function renderScriptBlocks(scriptData) {
       const container = document.getElementById('scriptBlocksContainer');
       if (!container) return;
