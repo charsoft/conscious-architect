@@ -176,6 +176,8 @@
             <span class="text-slate-400">Min Multiplier:</span>
             <select id="scoreFilter" onchange="renderCards()" class="bg-[#121620] border border-white/10 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-amber-400">
               <option value="0">All Outliers</option>
+              <option value="1.5">> 1.5x Outlier</option>
+              <option value="2.5">> 2.5x Outlier</option>
               <option value="5" selected>> 5.0x Outlier</option>
               <option value="7">> 7.0x Mega-Outlier</option>
             </select>
@@ -543,7 +545,7 @@
 
   <script>
     // --- STAGE 1 DATA ---
-    const OUTLIER_DATABASE = [
+    let OUTLIER_DATABASE = [
       {
         id: "neville_name",
         title: "Say Your Name Like THIS and Watch What Happens | Neville Goddard",
@@ -1098,7 +1100,9 @@ I'll see you in the next build.
             <div class="space-y-3 pt-2 border-t border-white/5">
               <div class="flex items-center justify-between text-[11px] text-slate-400">
                 <span>Views: <strong class="text-white">${o.views.toLocaleString()}</strong></span>
-                <span>Baseline: ${o.baseline.toLocaleString()}</span>
+                <a href="${o.ytUrl || (o.id.startsWith('http') ? o.id : (o.id.includes('_') && !/^[A-Za-z0-9_-]{11}$/.test(o.id) ? `https://www.youtube.com/${o.handle}` : `https://www.youtube.com/watch?v=${o.id}`))}" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:text-amber-300 font-semibold flex items-center space-x-1" onclick="event.stopPropagation()">
+                  <span>Watch on YouTube ↗</span>
+                </a>
               </div>
               <div class="text-[11px] text-amber-200/80 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 leading-relaxed">
                 <strong>🧱 Contributed Brick:</strong> ${o.brickContribution}
@@ -1641,6 +1645,7 @@ I'll see you in the next build.
           localStorage.setItem("tca_studio_key", key);
           errorElem.classList.add('hidden');
           checkAuth();
+          fetchLiveOutliers();
         } else {
           errorElem.classList.remove('hidden');
           input.focus();
@@ -1650,9 +1655,52 @@ I'll see you in the next build.
           localStorage.setItem("tca_studio_key", key);
           errorElem.classList.add('hidden');
           checkAuth();
+          fetchLiveOutliers();
         } else {
           errorElem.classList.remove('hidden');
         }
+      }
+    }
+
+    async function fetchLiveOutliers() {
+      const studioKey = localStorage.getItem("tca_studio_key") || "";
+      if (!studioKey) return;
+      try {
+        const res = await fetch('/api/outliers', {
+          headers: { 'Authorization': 'Bearer ' + studioKey }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.outliers && data.outliers.length > 0) {
+          OUTLIER_DATABASE = data.outliers.map(doc => {
+            const vidId = doc.videoId || doc.id;
+            return {
+              id: vidId,
+              title: doc.title || "Untitled",
+              channel: doc.channelTitle || doc.channel || "Unknown",
+              handle: doc.channelHandle || doc.handle || "",
+              views: doc.currentViews || doc.views || 0,
+              baseline: Math.round(doc.baselineViews || doc.baseline || 1000),
+              score: parseFloat(doc.outlierScore || doc.score || 1.0),
+              pillar: doc.pillar || "Conscious Architecture",
+              thumb: doc.thumbnailUrl || doc.thumb || `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`,
+              ytUrl: `https://www.youtube.com/watch?v=${vidId}`,
+              brickContribution: doc.brickContribution || `High-velocity pattern: ${doc.title.slice(0, 55)}...`,
+              deconstruction: doc.deconstruction || {
+                coreAngle: doc.title,
+                spokenHook: doc.title,
+                visualHook: "High-impact visual",
+                hookFormula: "[Trending Topic] + [Metaphysical Inversion]",
+                format: "Deep Dive",
+                pacing: "Dynamic",
+                powerWords: []
+              }
+            };
+          });
+          renderCards();
+        }
+      } catch (e) {
+        console.warn("Using offline outlier baseline:", e);
       }
     }
 
@@ -1667,6 +1715,7 @@ I'll see you in the next build.
     renderCards();
     loadState();
     updateIdeationSelector(getCatalog());
+    fetchLiveOutliers();
   </script>
 </body>
 </html>
