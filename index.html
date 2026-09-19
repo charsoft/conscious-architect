@@ -215,22 +215,25 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- STAGE 2: PRE-SCRIPT INTENTIONALITY BLUEPRINT (EDITABLE TEXTBOXES) -->
+    <!-- STAGE 2: SIGNATURE ARCHITECTURE BLUEPRINT (7-BEAT JOURNEY) -->
     <!-- ========================================================================= -->
     <div id="stageView-2" class="space-y-8 hidden">
       
       <div class="border gold-border rounded-2xl bg-[#0f131c] p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold">Stage 2 • Living Workspace</span>
-          <h3 class="serif-title text-2xl font-bold text-white mt-1">Refine Blueprint Beats &amp; Analogies</h3>
-          <p class="text-xs text-slate-400">Type directly into any box to rewrite analogies, adjust tone, or inject personal stories. Changes auto-save instantly.</p>
+          <div class="flex items-center space-x-2">
+            <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold">Stage 2 • Living Architecture Workspace</span>
+            <span id="activePillarBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Pillar: The Architecture of Agency</span>
+          </div>
+          <h3 class="serif-title text-2xl font-bold text-white mt-1">Refine The 7-Beat Signature Journey</h3>
+          <p class="text-xs text-slate-400">Ground your teaching in tension, one tech mirror, the 3-sentence bridge, and a tangible practice. All edits auto-save.</p>
         </div>
         <div class="flex items-center space-x-3">
           <button onclick="resetStage2()" class="px-3 py-2 bg-white/5 hover:bg-white/10 text-slate-300 text-xs rounded-xl border border-white/10 transition-colors">
             🔄 Reset Blueprint
           </button>
           <button onclick="recompileScriptFromStage2()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow transition-all flex items-center space-x-1.5">
-            <span>⚡ Recompile Script (Stage 3)</span>
+            <span>⚡ Recompile Teleprompter Script</span>
           </button>
           <button onclick="setStage(3)" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded-xl border border-white/20 transition-all">
             <span>View Script ➔</span>
@@ -238,133 +241,98 @@
         </div>
       </div>
 
-      <!-- Task 1: Unfiltered Persona Breakouts (EDITABLE) -->
-      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-4">
-        <div class="flex items-center justify-between">
+      <!-- Beat 1: Cold Open (0:00 - 0:20) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
           <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
-            <span>❤️ Task 1: Unfiltered Persona Moments (Edit in place)</span>
+            <span>⚡ Beat 1: The Cold Open &amp; Tension Hook (0:00 – 0:20)</span>
           </h4>
-          <span class="text-[10px] text-slate-400">When you break the 4th wall from teacher to sister/guide</span>
+          <span class="text-[10px] text-slate-400">Name the human tension &amp; make a clear promise (No "Hi everybody!")</span>
         </div>
+        <textarea id="edit-beat1" oninput="handleEdit()" rows="3" placeholder="If your life feels like it is giving you vague results, the problem may not be effort..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
+      </div>
+
+      <!-- Beat 2: Why This Matters (0:20 - 1:15) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>💔 Beat 2: Why This Matters / The Human Problem (0:20 – 1:15)</span>
+          </h4>
+          <span class="text-[10px] text-slate-400">Make it emotionally recognizable (Working hard vs. Intentional design)</span>
+        </div>
+        <textarea id="edit-beat2" oninput="handleEdit()" rows="4" placeholder="Most of us were taught to work hard. Far fewer of us were taught to choose a direction, set constraints, and revise with compassion..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
+      </div>
+
+      <!-- Beat 3: The Tech Mirror (1:15 - 3:30) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>💻 Beat 3: The Tech Mirror (1:15 – 3:30)</span>
+          </h4>
+          <span class="text-[10px] text-slate-400">Explain ONE tech/systems concept plainly in 60–90 seconds (The Doorway, Not the Destination)</span>
+        </div>
+        <textarea id="edit-beat3" oninput="handleEdit()" rows="5" placeholder="A language model does not know what you mean just because you feel it intensely. It responds to the context, role, examples, and constraints you provide..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
+      </div>
+
+      <!-- Beat 4: Conscious Translation & The 3-Sentence Bridge (3:30 - 5:30) -->
+      <div class="bg-[#0e121a] border border-amber-500/30 rounded-2xl p-6 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>🌉 Beat 4: The Conscious Translation &amp; 3-Sentence Bridge (3:30 – 5:30)</span>
+          </h4>
+          <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold">CRITICAL SIGNATURE ELEMENT</span>
+        </div>
+        <p class="text-xs text-slate-400">The 3-sentence bridge connects silicon to soul without toxic positivity or spiritual bypassing:</p>
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          
           <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <span class="text-[10px] font-bold text-amber-300 uppercase">Breakout #1 • The Corporate Confession</span>
-            <textarea id="edit-breakout1" oninput="handleEdit()" rows="5" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
+            <span class="text-[10px] font-bold text-amber-300 uppercase block">1. Name the Tech Fact</span>
+            <textarea id="edit-bridge-tech" oninput="handleEdit()" rows="4" placeholder="A generative AI model produces stronger results when the request includes clear context and constraints..." class="w-full bg-[#0a0d14] border border-white/10 rounded p-2.5 text-slate-200 text-xs focus:border-amber-400"></textarea>
           </div>
 
-          <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <span class="text-[10px] font-bold text-amber-300 uppercase">Breakout #2 • The Mirror Confrontation</span>
-            <textarea id="edit-breakout2" oninput="handleEdit()" rows="5" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
+          <div class="p-4 bg-[#141924] rounded-xl border border-rose-500/20 space-y-2">
+            <span class="text-[10px] font-bold text-rose-300 uppercase block">2. State the Human Limit (Compassionate Caveat)</span>
+            <textarea id="edit-bridge-limit" oninput="handleEdit()" rows="4" placeholder="Human lives are not prompts, and no amount of positive thinking gives us total control over illness, grief, or other people..." class="w-full bg-[#0a0d14] border border-white/10 rounded p-2.5 text-slate-200 text-xs focus:border-amber-400"></textarea>
           </div>
 
-          <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <span class="text-[10px] font-bold text-amber-300 uppercase">Breakout #3 • The Soul Sovereignty Shift</span>
-            <textarea id="edit-breakout3" oninput="handleEdit()" rows="5" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
+          <div class="p-4 bg-[#141924] rounded-xl border border-emerald-500/20 space-y-2">
+            <span class="text-[10px] font-bold text-emerald-300 uppercase block">3. Offer the Meaningful Systems Parallel</span>
+            <textarea id="edit-bridge-parallel" oninput="handleEdit()" rows="4" placeholder="But in both cases, clarity affects participation: what we notice, how we organize our choices, and what action becomes possible next..." class="w-full bg-[#0a0d14] border border-white/10 rounded p-2.5 text-slate-200 text-xs focus:border-amber-400"></textarea>
           </div>
-
         </div>
       </div>
 
-      <!-- Task 2: 30-Second Hook & USP (EDITABLE) -->
-      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-4">
-        <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider">
-          ⏱️ Task 2: 30-Second Hook &amp; USP Front-Loading (Edit spoken words)
-        </h4>
-        <div class="space-y-4 text-xs">
-          
-          <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-mono text-amber-400 font-bold">[0:00 - 0:05] CONFIRM THE CLICK</span>
-              <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">ON-SCREEN: "STOP BLAMING THE AI"</span>
-            </div>
-            <textarea id="edit-hook05" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
-          </div>
-
-          <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-mono text-amber-400 font-bold">[0:05 - 0:15] USP FRONT-LOAD</span>
-              <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">ON-SCREEN: "GOOGLE TRAINER &amp; MINISTER"</span>
-            </div>
-            <textarea id="edit-hook15" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
-          </div>
-
-          <div class="p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-mono text-amber-400 font-bold">[0:15 - 0:30] TIME-TO-VALUE</span>
-              <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">ON-SCREEN: "INPUT = OUTPUT"</span>
-            </div>
-            <textarea id="edit-hook30" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
-          </div>
-
+      <!-- Beat 5: Viewer Practice (5:30 - 8:30) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>📝 Beat 5: The Repeatable Practice (5:30 – 8:30)</span>
+          </h4>
+          <span class="text-[10px] text-slate-400">Put a clean framework on screen (Life Prompt, Context Audit, 7-Day Experiment)</span>
         </div>
+        <textarea id="edit-beat5" oninput="handleEdit()" rows="6" placeholder="The 5-Part 'Life Prompt' on-screen framework..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
       </div>
 
-      <!-- Task 4: Story Cycles & Analogies (EDITABLE) -->
-      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-4">
-        <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider">
-          🔄 Task 4: Story Cycles &amp; Core Analogies (Edit in place)
-        </h4>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-          
-          <!-- Cycle 1 -->
-          <div class="p-5 bg-[#141924] rounded-xl border border-white/5 space-y-3 flex flex-col justify-between">
-            <div class="space-y-2">
-              <span class="text-amber-400 font-bold text-[10px] uppercase block">Cycle 1 • The Vagueness Trap</span>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Setup / Promise:</label>
-                <textarea id="edit-c1-promise" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Progress / Tech Analogy:</label>
-                <textarea id="edit-c1-progress" oninput="handleEdit()" rows="4" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Payoff / Spiritual Insight:</label>
-                <textarea id="edit-c1-payoff" oninput="handleEdit()" rows="3" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cycle 2 -->
-          <div class="p-5 bg-[#141924] rounded-xl border border-white/5 space-y-3 flex flex-col justify-between">
-            <div class="space-y-2">
-              <span class="text-amber-400 font-bold text-[10px] uppercase block">Cycle 2 • Negative Constraints &amp; Hallucinations</span>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Setup / Promise:</label>
-                <textarea id="edit-c2-promise" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Progress / Tech Analogy:</label>
-                <textarea id="edit-c2-progress" oninput="handleEdit()" rows="4" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Payoff / Spiritual Insight:</label>
-                <textarea id="edit-c2-payoff" oninput="handleEdit()" rows="3" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cycle 3 -->
-          <div class="p-5 bg-[#141924] rounded-xl border border-white/5 space-y-3 flex flex-col justify-between">
-            <div class="space-y-2">
-              <span class="text-amber-400 font-bold text-[10px] uppercase block">Cycle 3 • The Iteration Dialogue</span>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Setup / Promise:</label>
-                <textarea id="edit-c3-promise" oninput="handleEdit()" rows="2" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Progress / Tech Analogy:</label>
-                <textarea id="edit-c3-progress" oninput="handleEdit()" rows="4" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-              <div>
-                <label class="text-[10px] text-slate-400 font-bold block mb-1">The Payoff / Spiritual Insight:</label>
-                <textarea id="edit-c3-payoff" oninput="handleEdit()" rows="3" class="w-full bg-[#0a0d14] border border-white/10 rounded p-2 text-slate-200 text-xs"></textarea>
-              </div>
-            </div>
-          </div>
-
+      <!-- Beat 6: Real-Life Story (8:30 - 10:00) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>🎙️ Beat 6: Real-Life Illustration / Story (8:30 – 10:00)</span>
+          </h4>
+          <span class="text-[10px] text-slate-400">Short anecdote from your Google training room, pulpit, or creative process</span>
         </div>
+        <textarea id="edit-beat6" oninput="handleEdit()" rows="4" placeholder="Tell a short story from a training room or your own creative process..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
+      </div>
+
+      <!-- Beat 7: Integration & Series Bridge (10:00 - 11:30) -->
+      <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h4 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-2">
+            <span>✨ Beat 7: Grounded Close &amp; Next-Video Bridge (10:00 – 11:30)</span>
+          </h4>
+          <span class="text-[10px] text-slate-400">Leaves them empowered, not hyped + teaser to next week's episode</span>
+        </div>
+        <textarea id="edit-beat7" oninput="handleEdit()" rows="3" placeholder="This week, do not demand a perfect answer from life. Offer it a clearer question. Next week, we dive into..." class="w-full bg-[#0a0d14] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:border-amber-400"></textarea>
       </div>
 
     </div>
@@ -505,34 +473,50 @@
   <!-- New Video Ideation Modal -->
   <div id="newIdeationBackdrop" onclick="closeNewIdeationModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-  <div id="newIdeationModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-[#0e131d] border gold-border rounded-2xl shadow-2xl z-50 p-6 space-y-5 transition-all duration-300 opacity-0 pointer-events-none scale-95">
+  <div id="newIdeationModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-[#0e131d] border gold-border rounded-2xl shadow-2xl z-50 p-6 space-y-4 transition-all duration-300 opacity-0 pointer-events-none scale-95">
     <div class="flex items-center justify-between border-b border-white/10 pb-3">
       <div class="flex items-center space-x-2">
-        <span class="text-base font-bold text-amber-400">✨ Start a New Video Ideation</span>
+        <span class="text-base font-bold text-amber-400">✨ Start a New Video Architecture</span>
       </div>
       <button onclick="closeNewIdeationModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
     </div>
 
-    <div class="space-y-4 text-xs">
-      <div class="space-y-1.5">
-        <label class="text-slate-300 font-bold block">1. What is your seed topic, question, or frustration?</label>
-        <input type="text" id="inputNewTopic" placeholder="e.g., Why AI agents feel like spiritual familiars" class="w-full bg-[#080b11] border border-white/10 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-amber-400">
+    <div class="space-y-3.5 text-xs">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="space-y-1">
+          <label class="text-slate-300 font-bold block">1. Video Title / Working Concept:</label>
+          <input type="text" id="inputNewTopic" placeholder="e.g. What Generative AI Taught Me About Clarity" class="w-full bg-[#080b11] border border-white/10 rounded-xl p-2.5 text-white text-xs focus:outline-none focus:border-amber-400">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-slate-300 font-bold block">2. Select Content Pillar:</label>
+          <select id="inputNewPillar" class="w-full bg-[#080b11] border border-white/10 rounded-xl p-2.5 text-amber-300 text-xs focus:outline-none focus:border-amber-400 font-semibold">
+            <option value="The Architecture of Agency">Pillar 2: The Architecture of Agency (Systems for Living)</option>
+            <option value="Technology as Mirror">Pillar 1: Technology as Mirror (Tech Reveals Life)</option>
+            <option value="Conscious Systems for a Changing World">Pillar 3: Conscious Systems for a Changing World (Wisdom &amp; Ethics)</option>
+          </select>
+        </div>
       </div>
 
-      <div class="space-y-1.5">
-        <label class="text-slate-300 font-bold block">2. What is your unique angle or spiritual/tech bridge?</label>
-        <textarea id="inputNewAngle" rows="3" placeholder="e.g., Explain how autonomous AI agents mirror metaphysical thought-forms (tulpas/spiritual familiars), and why conscious architects must set boundary intentions..." class="w-full bg-[#080b11] border border-white/10 rounded-xl p-3 text-white text-xs focus:outline-none focus:border-amber-400"></textarea>
+      <div class="space-y-1">
+        <label class="text-slate-300 font-bold block">3. Tech Mirror / Systems Concept (Optional):</label>
+        <input type="text" id="inputNewTech" placeholder="e.g. Prompt Clarity (Vague in, vague out), Context Window, Guardrails, Latency" class="w-full bg-[#080b11] border border-white/10 rounded-xl p-2.5 text-white text-xs focus:outline-none focus:border-amber-400">
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-slate-300 font-bold block">4. Outline, Raw Brain Dump &amp; Story Notes:</label>
+        <textarea id="inputNewNotes" rows="5" placeholder="Paste your rough bullet points, sermon excerpt, Google training anecdote, or the specific tension here..." class="w-full bg-[#080b11] border border-white/10 rounded-xl p-3 text-slate-200 text-xs leading-relaxed focus:outline-none focus:border-amber-400"></textarea>
       </div>
 
       <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-slate-300 text-[11px] leading-relaxed">
-        <strong>Engine Action:</strong> The system will automatically borrow proven Lego Bricks from your selected Outlier Cohort, front-load your Google Trainer + Minister USP, map 3 Story Cycles, and generate a complete word-for-word teleprompter script.
+        <strong>Conscious Architecture Engine:</strong> The system will parse your notes into your signature 7-beat journey: Cold Open ➔ Human Tension ➔ Tech Mirror ➔ 3-Sentence Bridge with Compassionate Limit ➔ On-Screen Practice ➔ Training Story ➔ Grounded Close.
       </div>
     </div>
 
     <div class="flex items-center justify-end space-x-3 pt-2 border-t border-white/10">
       <button onclick="closeNewIdeationModal()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-300 text-xs rounded-xl">Cancel</button>
       <button onclick="createAndLaunchNewIdeation()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow-lg flex items-center space-x-1.5">
-        <span>⚡ Generate Video Strategy &amp; Script</span>
+        <span>⚡ Generate Signature Blueprint &amp; Script</span>
       </button>
     </div>
   </div>
@@ -715,200 +699,123 @@
 
     let selectedIds = new Set(["neville_name", "spatial_reality", "ai_conscious_beckwith", "loophole_manifest"]);
 
-    // --- DEFAULT STAGE 2 DATA ---
-    const DEFAULT_STAGE2 = {
-      breakout1: "When I was training thousands of professionals for Google, I watched brilliant engineers struggle with the exact same thing my congregation struggles with on Sunday. We think we have an 'AI problem' or an 'affirmation problem.' We don't. We have an intimacy problem with our own desires. We are terrified of being specific because if we get specific and fail, it hurts. So we stay vague on purpose.",
-      breakout2: "Stop getting mad at the mirror. When an AI model hallucinates a hallucination, you don't scream at the screen. You look at your prompt and ask, 'Where did I leave the gate open?' But in your life, when old drama or lack shows up, you think the Universe is punishing you. It’s not punishing you—it’s obeying you. It’s compiling the background program you refuse to shut down.",
-      breakout3: "You are not an employee of these algorithms, and you are not a beggar to the universe. You are the Architect. Silicon has memory, but you have Consciousness. Start acting like the one who writes the code.",
-      hook05: "If your AI prompts feel like they're hallucinating generic fluff... or your daily intentions and affirmations feel completely stuck in neutral—the tool isn't broken.",
-      hook15: "As an official Google Trainer, I’ve taught thousands how to prompt AI. But as a licensed Science of Mind minister, here's what corporate stages never let me tell you...",
-      hook30: "Both systems run on the exact same universal law: Vague input guarantees chaotic output. In the next 12 minutes, I'm giving you the 3-step prompt architecture that fixes both your AI outputs and your internal reality.",
-      c1_promise: "Why 90% of people throw up their hands and declare that AI and manifestation are 'overrated.'",
-      c1_progress: "In AI: typing 'Write me a good marketing email' yields bland corporate cardboard because an LLM calculates the mathematical middle of the internet. In Spirit: telling the universe 'I just want things to be better' gives Divine Mind zero constraints, compiling into generic drift.",
-      c1_payoff: "Vagueness isn't humility; vagueness is fear of being specific. Once you give your mind clear parameters, the slop stops.",
-      c2_promise: "How to eliminate the background 'hallucinations' that derail your projects and your peace.",
-      c2_progress: "In LLMs: models invent plausible-sounding fiction when boundary constraints are missing. In Subconscious: when you launch a goal without negative constraints ('Do NOT dwell on past debt'), your mind fills the vacuum with 20-year-old childhood memories of struggle.",
-      c2_payoff: "Constraints are not limitations; constraints are the guardrails of reality. In New Thought, this is the spiritual practice of 'Denials.'",
-      c3_promise: "The single mindset shift that separates amateur prompt users from master architects.",
-      c3_progress: "The One-Shot Miracle fantasy: rookie users expect one magic prompt to create an app. In Spirit: speaking one affirmation Monday and quitting Tuesday when the check isn't in the mail. Manifestation is an interactive compile dialogue, not a vending machine.",
-      c3_payoff: "The delay between thought and reality is not a wall; it's the gestation period / compile window. Stop quitting on generation one."
-    };
-
-    // --- DEFAULT STAGE 3 SCRIPT DATA ---
-    const DEFAULT_STAGE3 = [
+    // --- 4 LAUNCH EPISODES (THE 30-DAY LAUNCH FOUNDATION) ---
+    const LAUNCH_CATALOG = [
       {
-        act: "ACT I: THE HOOK & USP FRONT-LOAD (0:00 - 1:30)",
-        content: `[PACING / MUSIC: Ambient low-fi pulse starts—contemplative, sleek, forward-moving.]
-[VISUAL: Rapid 2-second montage: A close-up of a cursor blinking in an empty AI prompt box... cutting immediately to a smartphone screen glowing in the dark with an unread affirmation reminder... cutting directly to Charlene seated calmly on the dawn mountain overlook, looking directly into the lens.]
-[ON-SCREEN TEXT: "STOP BLAMING THE AI"]
-
-CHARLENE (SPOKEN):
-If your AI prompts feel like they're hallucinating generic fluff... or your daily intentions and affirmations feel completely stuck in neutral... I have some uncomfortable news for you:
-
-The tool isn't broken.
-
-[PACING / MUSIC: Music drops out for half a beat. Crisp, clear vocal isolation.]
-[VISUAL: Camera smoothly pushes in on Charlene. A subtle, luminous champagne-gold blueprint grid illuminates behind her across the mountain mist.]
-[ON-SCREEN TEXT: "CHARLENE BANKS | Google Trainer & Science of Mind Minister"]
-
-CHARLENE (SPOKEN):
-For years, as an official Google Trainer, I’ve taught thousands of people live on YouTube how to build, prompt, and work with artificial intelligence. But as a licensed Science of Mind minister, here is the secret that corporate stages would never let me say out loud:
-
-[VISUAL: Split-screen graphic. Left side: An AI prompt box labeled 'Input Prompt' compiling into code. Right side: A human silhouette labeled 'Subconscious Thought' compiling into physical reality.]
-[ON-SCREEN TEXT: "VAGUE INPUT = VAGUE REALITY"]
-
-CHARLENE (SPOKEN):
-Both systems run on the exact same universal law. Vague input guarantees chaotic output. When an AI model hallucinates, or when your life feels stalled, the mirror is not malfunctioning. Both systems are simply giving you the precise, mathematical reflection of your unexamined instructions.
-
-[VISUAL: Full shot of Charlene gesturing warmly, leaning forward in relaxed authority.]
-[ON-SCREEN TEXT: "THE 3 PROMPT LAWS"]
-
-CHARLENE (SPOKEN):
-In the next 12 minutes, I'm giving you the exact 3-step prompt architecture that solves both your AI outputs and your internal reality. Stop blaming the algorithm. Today, we fix the prompt.`
+        id: "video-1-stop-living-by-default",
+        title: "You Are the Architect: Stop Living by Default",
+        pillar: "The Architecture of Agency",
+        publishDate: "Wed., Sept. 23",
+        stage2: {
+          pillar: "The Architecture of Agency",
+          beat1: "You may be working incredibly hard on a life you have not actually designed. The issue is not that you lack potential. The issue is that your attention keeps being spent on someone else’s priorities. In this video, we begin architecting what actually matters.",
+          beat2: "Most of us were taught to work hard. Far fewer of us were taught to step back, look at the whole system, set clear constraints, and revise with compassion. So we wake up exhausted, executing everyone else's blueprint while our own deepest intentions remain on the back burner.",
+          beat3: "In systems architecture, if you build a high-speed pipeline on top of a fragmented data structure, all you do is accelerate your errors. Speed without conscious architecture isn't progress—it's high-velocity chaos.",
+          bridge_tech: "A software system only does what its underlying architecture permits, regardless of how fast the server runs.",
+          bridge_limit: "Human life is not a machine, and no amount of life-hacking gives us control over grief, sudden change, or other people's choices.",
+          bridge_parallel: "But seeing your life as a living system changes how you participate: what you say yes to, where your attention flows, and what structures you put in place to protect your energy.",
+          beat5: "Where am I living by default right now? Choose ONE area this week: Schedule, Boundaries, or Creative Work. Name one small design decision you can make in the next 7 days.",
+          beat6: "When I was consulting for massive tech enterprises, I watched leaders with $100M budgets completely burn out because their tools were modern but their personal life architecture was running on outdated default settings from twenty years ago.",
+          beat7: "This week, stop reacting to the default settings of the world around you. You are the architect. Next Wednesday, we dive into what generative AI taught me about clarity—and why vague intentions produce chaotic lives."
+        }
       },
       {
-        act: "ACT II, CYCLE 1: GARBAGE IN, GARBAGE OUT (1:30 - 4:30)",
-        content: `[PACING / MUSIC: Subtle rhythmic synth layers in; warm, steady, educational rhythm.]
-[VISUAL: Graphic of an amateur ChatGPT prompt typing on screen: 'Write me a good marketing email for my business.']
-[ON-SCREEN TEXT: "ERROR #1: ASSUMED CONTEXT"]
-
-CHARLENE (SPOKEN):
-Let’s start with the #1 reason 90% of people throw their hands up and declare that AI is 'overrated.' 
-
-They open up Claude or ChatGPT and type in: 'Write me a good marketing email for my coaching business.' And what does the AI spit back? Pure, unseasoned corporate cardboard. Jargon, clichés, exclamation marks—absolute synthetic slop.
-
-And the user says: 'See? AI can't write like a human.'
-
-[PROGRESS / VALUE DELIVERY: GOOGLE TRAINER INSTRUCTION]
-[VISUAL: Cut back to Charlene on the summit, smiling knowingly.]
-[ON-SCREEN TEXT: "THE 4 PROMPT PILLARS: ROLE • CONTEXT • CONSTRAINTS • OBJECTIVE"]
-
-CHARLENE (SPOKEN):
-Now, when I train engineers and enterprise teams, here’s the first rule I teach them: An AI model possesses zero psychic intuition. It has access to the sum total of human knowledge, but if you don't give it a Persona, a Target Audience, a Tone, and an Objective, it has to calculate the mathematical middle of everything on the internet. And the mathematical middle of the internet is mediocre fluff.
-
-[THE TECHNOLOGY-TO-METAPHYSICS BRIDGE]
-[PACING / MUSIC: Music softens; intimate, warm acoustic piano underlay enters.]
-[VISUAL: Charlene gestures with both hands, eyes softening with genuine pastoral warmth.]
-[ON-SCREEN TEXT: "VAGUE DESIRE = UNIVERSAL DRIFT"]
-
-CHARLENE (SPOKEN):
-Now look at your spiritual life. 
-
-How many times have you closed your eyes in meditation or written in your journal: 'I just want more abundance. I just want peace. I just want things to get better'? 
-
-In the Science of Mind, Ernest Holmes taught that the Universal Subconscious Mind is completely neutral. It is a Creative Medium. It takes whatever pattern you impress upon it and reproduces it according to law. 
-
-When you tell the Universe, 'I just want things to be better,' you have given it zero constraints. You haven't defined what abundance looks like, who you are operating as, or what you are willing to receive. You are feeding the Divine Intelligence the exact same vague garbage you fed ChatGPT—and then you get mad when your life compiles into random, generic drift.
-
-Vagueness isn't humility; vagueness is fear of being specific. Once you give your mind clear parameters, the slop stops.`
+        id: "video-2-ai-clarity",
+        title: "What Generative AI Taught Me About Clarity",
+        pillar: "Technology as Mirror",
+        publishDate: "Wed., Sept. 30",
+        stage2: {
+          pillar: "Technology as Mirror",
+          beat1: "If your life has been giving you vague results, it may not be because you are lazy, unworthy, or incapable. It may be because you have never had the space—or the permission—to become clear about what you really want. In this video, we fix the prompt.",
+          beat2: "Most people spend years working furiously, wondering why their goals never quite materialize. Vague intentions create vague realities—not because the universe is punishing you, but because clarity hasn't been designed.",
+          beat3: "Watch what happens when someone types 'Write something about leadership' into an AI model: you get generic corporate cardboard. But when you specify the role, context, constraints, and exact outcome, the result is sharp and usable.",
+          bridge_tech: "A generative AI model produces stronger results when the request includes a clear goal, relevant context, examples, and constraints.",
+          bridge_limit: "Human lives are not prompts, and no amount of positive thinking gives us total control over illness, injustice, grief, timing, or other people.",
+          bridge_parallel: "But in both cases, clarity affects participation: what we notice, how we organize our choices, which support we seek, and what action becomes possible next.",
+          beat5: "The 5-Part 'Life Prompt':\n1. Outcome: What do I want to create or change in the next 30 days?\n2. Context: What is true about my situation right now?\n3. Values: What non-negotiables must I protect?\n4. First Action: What is one concrete step in the next 7 days?\n5. Review Date: When will I pause, learn, and revise?",
+          beat6: "In my Google training classes, students often panic when their prompts return slop. I tell them: 'Don't yell at the screen. Look at your prompt. Where did you leave the door open?' The moment they get specific, the model falls into line.",
+          beat7: "Your life is not waiting for a perfect prompt. It is waiting for your conscious participation. Next week, we tackle why the prompt is not the practice—and why intention without systems is just wishful thinking."
+        }
       },
       {
-        act: "ACT II, CYCLE 2: NEGATIVE CONSTRAINTS & HALLUCINATIONS (4:30 - 7:30)",
-        content: `[PACING / MUSIC: Pacing picks up slightly; light tech percussion.]
-[VISUAL: Graphic of an AI output citing fake court cases with red error highlights.]
-[ON-SCREEN TEXT: "ERROR #2: THE UNCONSTRAINED VOID"]
-
-CHARLENE (SPOKEN):
-In artificial intelligence, a hallucination is what happens when a model doesn't know the answer, but because it is programmed to never say nothing, it invents plausible-sounding fiction to bridge the gap.
-
-And why did it happen? Because we failed to provide Negative Constraints.
-
-[VISUAL: Cut to Charlene. Lines of golden code appear floating in space.]
-[ON-SCREEN TEXT: "NEGATIVE CONSTRAINTS = WHAT IS FORBIDDEN"]
-
-CHARLENE (SPOKEN):
-When elite prompt engineers build production systems, half the prompt isn't about what the AI should do—it’s about what it is strictly forbidden from doing:
-'Do NOT cite unverified sources. Do NOT use buzzwords. Do NOT exceed 150 words.'
-
-Constraints are not limitations; constraints are the guardrails of reality.
-
-[THE TECHNOLOGY-TO-METAPHYSICS BRIDGE]
-[PACING / MUSIC: Dramatic drop in background beat.]
-[VISUAL: Close-up on Charlene looking piercingly into camera.]
-[ON-SCREEN TEXT: "THE SUBCONSCIOUS WILL FILL THE VACUUM"]
-
-CHARLENE (SPOKEN):
-Here is the metaphysical truth: Your subconscious mind will always hallucinate when you leave a vacuum. 
-
-If you say, 'I'm starting a new business,' but you don't place negative constraints around your self-talk, your subconscious model looks into its training dataset. And what's in your training dataset? The memory of your parents fighting over bills in 2004. That teacher who said you weren't good at math. That partner who walked out. 
-
-Your subconscious pulls up all that old legacy data and hallucinates an entire scenario of failure before you even launch.
-
-In New Thought, we call this the spiritual practice of 'Denials'—declaring what has no authority in your consciousness so that your affirmation has room to compile. Define the boundaries of your mind.`
+        id: "video-3-prompt-not-practice",
+        title: "The Prompt Is Not the Practice: Why Intention Needs Action",
+        pillar: "The Architecture of Agency",
+        publishDate: "Wed., Oct. 7",
+        stage2: {
+          pillar: "The Architecture of Agency",
+          beat1: "Manifestation without structure is mostly wishful thinking. A prompt begins an interaction—it is not a completed workflow. Today, we bridge the gap between setting an intention and living it.",
+          beat2: "We've been sold the fantasy of the 'One-Shot Miracle'—say one prayer, write one affirmation, type one prompt, and reality is supposed to magically reconfigure. When it doesn't, we quit.",
+          beat3: "In software engineering, you never run a prompt and walk away. You build pipelines, tests, review loops, and error handlers. An intention without an operational system is just an uncompiled thought.",
+          bridge_tech: "A prompt is merely an initiation token; production output requires workflows, feedback loops, and human-in-the-loop oversight.",
+          bridge_limit: "We cannot automate human fulfillment, and structure alone cannot replace genuine passion or purpose.",
+          bridge_parallel: "Supportive systems allow a meaningful intention to become a lived, sustainable reality.",
+          beat5: "The 7-Day Experiment:\n1. Name the desired outcome\n2. Choose ONE small daily action\n3. Define the smallest repeatable rhythm (e.g. 10 minutes at 8 AM)\n4. Observe without judgment\n5. Review and revise after seven days",
+          beat6: "I used to see ministers preach powerful visions on Sunday, but by Tuesday their church operations were falling apart because nobody had built the calendar or workflow to carry the dream.",
+          beat7: "Stop waiting for inspiration to carry what only systems can hold. Build the practice. Next week, we explore your inner context window—the hidden stories running your choices."
+        }
       },
       {
-        act: "ACT II, CYCLE 3: THE ITERATION DIALOGUE (7:30 - 9:30)",
-        content: `[PACING / MUSIC: Forward-leaning momentum; inspiring and rhythmic.]
-[VISUAL: Screen recording simulation: Version 1 (C-) ➔ Prompt Adjustment ➔ Version 2 (B+) ➔ Fine-Tuning ➔ Version 3 (Masterpiece A+).]
-[ON-SCREEN TEXT: "ERROR #3: THE ONE-SHOT FANTASY"]
-
-CHARLENE (SPOKEN):
-There is a toxic fantasy that rookie prompt users suffer from: The One-Shot Miracle. They think a prompt engineer sits down, types one magical sentence, and a multimillion-dollar application appears out of nowhere.
-
-No senior engineer works that way. Prompt engineering is not a vending machine; it is an iterative dialogue. You prompt, you inspect the output, you adjust the temperature, you add context, and you steer the model until it matches your vision.
-
-[VISUAL: Cut to Charlene on the summit, sweeping morning light washing over the frame.]
-[ON-SCREEN TEXT: "MANIFESTATION IS AN INTERACTIVE CONVERSATION"]
-
-CHARLENE (SPOKEN):
-And yet, in our spiritual lives, we treat the Divine like a cheap cosmic drive-thru! 
-
-We speak an affirmation on Monday morning. By Tuesday afternoon, we don't see the money, we don't see the client, we don't feel the peace. And what do we say? 'See? Manifestation doesn't work.'
-
-The delay between your intention and physical reality is not a wall—it is the iteration space. In software, we call that the compile window. In metaphysics, we call it the gestation period. Your job is not to quit on generation one; your job is to stay in conscious dialogue with the creative medium until the physical form matches the mental blueprint.`
-      },
-      {
-        act: "ACT III: THE UNFILTERED CLIMAX & PERSPECTIVE SHIFT (9:30 - 11:30)",
-        content: `[PACING / MUSIC: Music drops to an intimate, resonant, warm cello and ambient pad. Pure heart space.]
-[VISUAL: Cut to a tight, intimate shot of Charlene. She leans in slightly, resting her arm on her knee, completely stepping out of 'teacher mode' into raw, sisterly truth.]
-[ON-SCREEN TEXT: "A MOMENT OF RAW TRUTH"]
-
-CHARLENE (SPOKEN):
-Can I tell you something honest? 
-
-I spent years keeping my tech career and my spiritual ministry in two completely separate boxes. At Google and in corporate consulting rooms, I wore the neutral blazer, talked about cloud architectures and API throughput, and made sure never to mention the soul. 
-
-And then on Sunday mornings at CSL, I stood in the pulpit and talked about divine law, consciousness, and the presence of Spirit, while editing my Python code on my phone in the car before service.
-
-And one day, sitting on a mountain overlook just like this at dawn, the truth hit me right in the chest: 
-
-They are the same thing.
-
-We have built a world where tech bros worship cold silicon while losing their humanity, and spiritual seekers avoid technology out of fear that it’s taking away our soul. 
-
-Both are looking in the wrong direction.
-
-Artificial intelligence does not have a soul, it does not have consciousness, and it will never be the creator. You are. The technology is simply the most sophisticated mirror humanity has ever built. Stop shrinking before these tools. You are the Conscious Architect. You possess the spark of the Infinite Mind. Start acting like the one who holds the pen.`
-      },
-      {
-        act: "ACT IV: THE 60-SECOND PROTOCOL & CALL TO ACTION (11:30 - END)",
-        content: `[PACING / MUSIC: Inspiring, uplifting crescendo; confident and luminous.]
-[VISUAL: Wide cinematic shot of Charlene standing on the rock bluff, overlooking the sun cresting the mountain ridge. The golden Fibonacci spiral and blueprint vectors gently trace the horizon.]
-[ON-SCREEN TEXT: "THE 60-SECOND MORNING PROTOCOL"]
-
-CHARLENE (SPOKEN):
-So here is your assignment starting tomorrow morning. Before you touch your phone, before you open your laptop:
-
-1. Declare the Role: 'I am operating today as the Conscious Architect of my reality.'
-2. Set the Negative Constraints: 'I refuse to allow the background hallucinations of doubt, scarcity, or yesterday's old fear loops into my mental runtime.'
-3. Stay in the Dialogue: 'I iterate with patience, knowing the law executes what I believe.'
-
-[VISUAL: The Conscious Architect logo badge appears cleanly in bottom third: Champagne gold and crisp white.]
-[ON-SCREEN TEXT: "SUBSCRIBE • THE CONSCIOUS ARCHITECT WITH CHARLENE BANKS"]
-
-CHARLENE (SPOKEN):
-If you are ready to master your internal operating system... and learn how to use bleeding-edge AI without ever compromising your spiritual sovereignty... hit the subscribe button right now. 
-
-Welcome to The Conscious Architect. 
-
-Think deeply. Build boldly. And remember: You are the one writing the code.
-
-I'll see you in the next build.
-
-[PACING / MUSIC: Final warm, resonant chord fades smoothly to silence.]
-[VISUAL: Fade to black with channel banner artwork, subscribe button, and next recommended video card.]`
+        id: "video-4-context-window",
+        title: "Your Inner Context Window: The Stories Shaping Your Decisions",
+        pillar: "Technology as Mirror",
+        publishDate: "Wed., Oct. 14",
+        stage2: {
+          pillar: "Technology as Mirror",
+          beat1: "In AI, the context window determines what the model sees. In human life, old stories, relationships, and inherited beliefs shape every choice you make. Today, we audit your inner context window.",
+          beat2: "You think you're making decisions in the present moment, but you're actually executing predictions based on cached context from ten or twenty years ago.",
+          beat3: "When an LLM's context window is filled with noisy, contradictory documents, every output it generates becomes biased and confused. The same happens to your mind when your context is cluttered with old fear loops.",
+          bridge_tech: "The quality of an AI's response is mathematically bound by the tokens present in its active context window.",
+          bridge_limit: "You are not an algorithm, and your past does not get the final word on who you can become.",
+          bridge_parallel: "What surrounds your attention actively participates in what you create—clear the context, and fresh choices emerge.",
+          beat5: "The Context Audit:\n1. What message am I repeatedly receiving from my environment?\n2. Who or what is reinforcing it?\n3. Is it accurate, current, and life-giving?\n4. What new input would better support the person I am becoming?",
+          beat6: "A senior executive told me she couldn't take her company to the next level. When we audited her context, she was still consuming the voice of a critical boss from her first job in 2005.",
+          beat7: "Audit your room. Clean your window. You are the architect of what gets admitted. Join me next week as we reveal the full 7-part life system!"
+        }
       }
     ];
+
+    // Generate Stage 3 Script from Stage 2 data
+    function compileScriptFromBlueprint(s2, title, pillar) {
+      return [
+        {
+          act: "BEAT 1: THE COLD OPEN & TENSION HOOK (0:00 – 0:20)",
+          content: "[PACING / MUSIC: Direct, calm, forward-moving pulse]\n[VISUAL: Tight shot on Charlene. Looking directly into the camera. No long intro.]\n[ON-SCREEN TEXT: \"" + (title || "").toUpperCase() + "\"]\n\nCHARLENE (SPOKEN):\n" + (s2.beat1 || "")
+        },
+        {
+          act: "BEAT 2: WHY THIS MATTERS / THE HUMAN PROBLEM (0:20 – 1:15)",
+          content: "[PACING / MUSIC: Warm educational rhythm. Thoughtful, empathetic.]\n[VISUAL: Medium shot. Golden blueprint vector lines trace gently in background.]\n[ON-SCREEN TEXT: \"PILLAR: " + (pillar || "").toUpperCase() + "\"]\n\nCHARLENE (SPOKEN):\n" + (s2.beat2 || "")
+        },
+        {
+          act: "BEAT 3: THE TECH MIRROR (1:15 – 3:30)",
+          content: "[PACING / MUSIC: Crisp, clear tech instruction. 60–90 seconds max.]\n[VISUAL: Simple graphic diagram on screen: inputs, context, and constraints.]\n[ON-SCREEN TEXT: \"THE TECH MIRROR\"]\n\nCHARLENE (SPOKEN):\n" + (s2.beat3 || "")
+        },
+        {
+          act: "BEAT 4: THE CONSCIOUS TRANSLATION & 3-SENTENCE BRIDGE (3:30 – 5:30)",
+          content: "[PACING / MUSIC: Music drops down. Pure vocal isolation and warmth.]\n[VISUAL: Cut back to Charlene. Intimate, grounded sisterly presence.]\n[ON-SCREEN TEXT: \"CONSCIOUS TRANSLATION\"]\n\nCHARLENE (SPOKEN):\n" + (s2.bridge_tech || "") + "\n\n" + (s2.bridge_limit || "") + "\n\n" + (s2.bridge_parallel || "")
+        },
+        {
+          act: "BEAT 5: THE REPEATABLE VIEWER PRACTICE (5:30 – 8:30)",
+          content: "[PACING / MUSIC: Focused, practical workshop tone.]\n[VISUAL: Clean 5-part framework or journal graphic overlay.]\n[ON-SCREEN TEXT: \"THE ARCHITECT'S PRACTICE\"]\n\nCHARLENE (SPOKEN):\nHere is your practice for this week...\n\n" + (s2.beat5 || "")
+        },
+        {
+          act: "BEAT 6: REAL-LIFE ILLUSTRATION & STORY (8:30 – 10:00)",
+          content: "[PACING / MUSIC: Intimate, reflective piano or warm ambient pad.]\n[VISUAL: Natural framing. Charlene sharing an honest human moment.]\n[ON-SCREEN TEXT: \"BEHIND THE BLUEPRINT\"]\n\nCHARLENE (SPOKEN):\n" + (s2.beat6 || "")
+        },
+        {
+          act: "BEAT 7: GROUNDED CLOSE & SERIES BRIDGE (10:00 – 11:30)",
+          content: "[PACING / MUSIC: Confident, luminous crescendo. Uplifting and grounded.]\n[VISUAL: Wide cinematic shot. Logo badge appears in lower third.]\n[ON-SCREEN TEXT: \"SUBSCRIBE • THE CONSCIOUS ARCHITECT\"]\n\nCHARLENE (SPOKEN):\n" + (s2.beat7 || "") + "\n\nSubscribe to The Conscious Architect. Think deeply. Build boldly. I'll see you in the next build."
+        }
+      ];
+    }
+
+    // Attach compiled script to initial launch catalog
+    LAUNCH_CATALOG.forEach(item => {
+      item.stage3 = compileScriptFromBlueprint(item.stage2, item.title, item.pillar);
+    });
+
+    const DEFAULT_STAGE2 = LAUNCH_CATALOG[0].stage2;
+    const DEFAULT_STAGE3 = LAUNCH_CATALOG[0].stage3;
 
     // --- STATE MANAGEMENT (LOCAL STORAGE PERSISTENCE) ---
     const STORAGE_KEY_STAGE2 = "tca_stage2_data";
@@ -919,21 +826,19 @@ I'll see you in the next build.
       const s2Raw = localStorage.getItem(STORAGE_KEY_STAGE2);
       const s2 = s2Raw ? JSON.parse(s2Raw) : DEFAULT_STAGE2;
       
-      document.getElementById('edit-breakout1').value = s2.breakout1 || "";
-      document.getElementById('edit-breakout2').value = s2.breakout2 || "";
-      document.getElementById('edit-breakout3').value = s2.breakout3 || "";
-      document.getElementById('edit-hook05').value = s2.hook05 || "";
-      document.getElementById('edit-hook15').value = s2.hook15 || "";
-      document.getElementById('edit-hook30').value = s2.hook30 || "";
-      document.getElementById('edit-c1-promise').value = s2.c1_promise || "";
-      document.getElementById('edit-c1-progress').value = s2.c1_progress || "";
-      document.getElementById('edit-c1-payoff').value = s2.c1_payoff || "";
-      document.getElementById('edit-c2-promise').value = s2.c2_promise || "";
-      document.getElementById('edit-c2-progress').value = s2.c2_progress || "";
-      document.getElementById('edit-c2-payoff').value = s2.c2_payoff || "";
-      document.getElementById('edit-c3-promise').value = s2.c3_promise || "";
-      document.getElementById('edit-c3-progress').value = s2.c3_progress || "";
-      document.getElementById('edit-c3-payoff').value = s2.c3_payoff || "";
+      if (document.getElementById('edit-beat1')) document.getElementById('edit-beat1').value = s2.beat1 || "";
+      if (document.getElementById('edit-beat2')) document.getElementById('edit-beat2').value = s2.beat2 || "";
+      if (document.getElementById('edit-beat3')) document.getElementById('edit-beat3').value = s2.beat3 || "";
+      if (document.getElementById('edit-bridge-tech')) document.getElementById('edit-bridge-tech').value = s2.bridge_tech || "";
+      if (document.getElementById('edit-bridge-limit')) document.getElementById('edit-bridge-limit').value = s2.bridge_limit || "";
+      if (document.getElementById('edit-bridge-parallel')) document.getElementById('edit-bridge-parallel').value = s2.bridge_parallel || "";
+      if (document.getElementById('edit-beat5')) document.getElementById('edit-beat5').value = s2.beat5 || "";
+      if (document.getElementById('edit-beat6')) document.getElementById('edit-beat6').value = s2.beat6 || "";
+      if (document.getElementById('edit-beat7')) document.getElementById('edit-beat7').value = s2.beat7 || "";
+
+      const activePillar = s2.pillar || "The Architecture of Agency";
+      const badge = document.getElementById('activePillarBadge');
+      if (badge) badge.innerText = 'Pillar: ' + activePillar;
 
       // Stage 3
       const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
@@ -944,26 +849,21 @@ I'll see you in the next build.
     function handleEdit() {
       // Gather Stage 2 data
       const s2Data = {
-        breakout1: document.getElementById('edit-breakout1').value,
-        breakout2: document.getElementById('edit-breakout2').value,
-        breakout3: document.getElementById('edit-breakout3').value,
-        hook05: document.getElementById('edit-hook05').value,
-        hook15: document.getElementById('edit-hook15').value,
-        hook30: document.getElementById('edit-hook30').value,
-        c1_promise: document.getElementById('edit-c1-promise').value,
-        c1_progress: document.getElementById('edit-c1-progress').value,
-        c1_payoff: document.getElementById('edit-c1-payoff').value,
-        c2_promise: document.getElementById('edit-c2-promise').value,
-        c2_progress: document.getElementById('edit-c2-progress').value,
-        c2_payoff: document.getElementById('edit-c2-payoff').value,
-        c3_promise: document.getElementById('edit-c3-promise').value,
-        c3_progress: document.getElementById('edit-c3-progress').value,
-        c3_payoff: document.getElementById('edit-c3-payoff').value,
+        pillar: (getCatalog().find(v => v.id === (localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id))?.pillar) || "The Architecture of Agency",
+        beat1: document.getElementById('edit-beat1')?.value || "",
+        beat2: document.getElementById('edit-beat2')?.value || "",
+        beat3: document.getElementById('edit-beat3')?.value || "",
+        bridge_tech: document.getElementById('edit-bridge-tech')?.value || "",
+        bridge_limit: document.getElementById('edit-bridge-limit')?.value || "",
+        bridge_parallel: document.getElementById('edit-bridge-parallel')?.value || "",
+        beat5: document.getElementById('edit-beat5')?.value || "",
+        beat6: document.getElementById('edit-beat6')?.value || "",
+        beat7: document.getElementById('edit-beat7')?.value || ""
       };
       localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(s2Data));
 
       // Persist into catalog for active ideation
-      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+      const activeId = localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id;
       const cat = getCatalog();
       const idx = cat.findIndex(v => v.id === activeId);
       if (idx !== -1) {
@@ -974,539 +874,26 @@ I'll see you in the next build.
       showSaveBadge("✓ Autosaved Locally");
     }
 
-    function handleScriptBlockEdit(index, newContent) {
-      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
-      const s3 = s3Raw ? JSON.parse(s3Raw) : [...DEFAULT_STAGE3];
-      if (s3[index]) {
-        s3[index].content = newContent;
-        localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(s3));
-
-        // Persist into catalog for active ideation
-        const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
-        const cat = getCatalog();
-        const idx = cat.findIndex(v => v.id === activeId);
-        if (idx !== -1) {
-          cat[idx].stage3 = s3;
-          localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
-        }
-
-        showSaveBadge("✓ Script Autosaved Locally");
-      }
-    }
-
-    function showSaveBadge(text) {
-      const badge = document.getElementById('saveBadge');
-      badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping"></span>${text}`;
-      badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-300 bg-emerald-950/80 border border-emerald-500 shadow-sm transition-all";
-      setTimeout(() => {
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5"></span>Autosaved Locally`;
-        badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800 transition-all";
-      }, 2000);
-    }
-
-    function resetStage2() {
-      if (confirm("Reset Stage 2 blueprint and analogies to default?")) {
-        localStorage.removeItem(STORAGE_KEY_STAGE2);
-        loadState();
-        showSaveBadge("Blueprint Reset");
-      }
-    }
-
-    function resetStage3() {
-      if (confirm("Reset Stage 3 teleprompter script to default?")) {
-        localStorage.removeItem(STORAGE_KEY_STAGE3);
-        loadState();
-        showSaveBadge("Script Reset");
-      }
-    }
-
-    function renderScriptBlocks(scriptData) {
-      const container = document.getElementById('scriptBlocksContainer');
-      container.innerHTML = '';
-
-      scriptData.forEach((s, idx) => {
-        const div = document.createElement('div');
-        div.className = "p-6 bg-[#121622] rounded-2xl border border-white/10 space-y-3 shadow-xl";
-        div.innerHTML = `
-          <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">${s.act}</span>
-            <span class="text-[10px] text-slate-400">Click text to edit</span>
-          </div>
-          <textarea id="script-block-${idx}" oninput="handleScriptBlockEdit(${idx}, this.value)" rows="12" class="w-full bg-[#090c12] border border-white/10 rounded-xl p-4 text-slate-200 text-sm leading-loose font-sans"></textarea>
-        `;
-        container.appendChild(div);
-        document.getElementById(`script-block-${idx}`).value = s.content;
-      });
-    }
-
-    async function syncToFirestore() {
-      const badge = document.getElementById('saveBadge');
-      badge.innerText = "⏳ Syncing to Firestore...";
-      badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-amber-300 bg-amber-950/60 border border-amber-800 animate-pulse";
-
-      // Combine Stage 2 and 3 state
-      const s2Raw = localStorage.getItem(STORAGE_KEY_STAGE2);
-      const s2 = s2Raw ? JSON.parse(s2Raw) : DEFAULT_STAGE2;
-      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
-      const s3 = s3Raw ? JSON.parse(s3Raw) : DEFAULT_STAGE3;
-
-      const fullScript = s3.map(sec => `=== ${sec.act} ===\n\n${sec.content}`).join('\n\n=========================================\n\n');
-
-      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
-      const cat = getCatalog();
-      const currentVideo = cat.find(v => v.id === activeId) || { title: "The Real Reason Your AI Prompts (and Intentions) Keep Failing" };
-
-      const payload = {
-        ideationId: activeId,
-        channel: "The Conscious Architect with Charlene Banks",
-        title: currentVideo.title,
-        status: "script_refined",
-        lastUpdated: new Date().toISOString(),
-        stage2_intentionalityBlueprint: {
-          breakoutMoments: [s2.breakout1, s2.breakout2, s2.breakout3],
-          hooks: { hook05: s2.hook05, hook15: s2.hook15, hook30: s2.hook30 },
-          storyCycles: [
-            { cycle: 1, promise: s2.c1_promise, progress: s2.c1_progress, payoff: s2.c1_payoff },
-            { cycle: 2, promise: s2.c2_promise, progress: s2.c2_progress, payoff: s2.c2_payoff },
-            { cycle: 3, promise: s2.c3_promise, progress: s2.c3_progress, payoff: s2.c3_payoff }
-          ]
-        },
-        stage3_masterScript: fullScript
-      };
-
-      const studioKey = localStorage.getItem("tca_studio_key") || "";
-
-      try {
-        const res = await fetch('/api/save', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + studioKey
-          },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          badge.innerText = "✓ Synced to Firestore & Obsidian!";
-          badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/80 border border-emerald-500 shadow";
-          setTimeout(() => {
-            badge.innerText = "Autosaved Locally";
-            badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800";
-          }, 3000);
-        } else {
-          throw new Error("Server responded with error");
-        }
-      } catch (err) {
-        console.warn("Local API not listening on this port; saving state to local storage.");
-        badge.innerText = "✓ Saved Locally & Ready";
-        badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-amber-300 bg-amber-950/60 border border-amber-800";
-        setTimeout(() => {
-          badge.innerText = "Autosaved Locally";
-          badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-emerald-400 bg-emerald-950/60 border border-emerald-800";
-        }, 2500);
-      }
-    }
-
-    function setStage(stageNum) {
-      [1, 2, 3].forEach(s => {
-        const btn = document.getElementById(`stageBtn-${s}`);
-        const view = document.getElementById(`stageView-${s}`);
-        if (s === stageNum) {
-          btn.className = "py-3 px-4 border-b-2 border-amber-400 text-amber-400 flex items-center space-x-2 transition-all whitespace-nowrap";
-          btn.querySelector('span:first-child').className = "w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-bold";
-          view.classList.remove('hidden');
-        } else {
-          btn.className = "py-3 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 transition-all whitespace-nowrap";
-          btn.querySelector('span:first-child').className = "w-5 h-5 rounded-full bg-white/10 text-slate-300 flex items-center justify-center text-[10px] font-bold";
-          view.classList.add('hidden');
-        }
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderCards() {
-      const minScore = parseFloat(document.getElementById('scoreFilter').value);
-      const container = document.getElementById('cardsGrid');
-      container.innerHTML = '';
-
-      const filtered = OUTLIER_DATABASE.filter(o => o.score >= minScore);
-
-      filtered.forEach(o => {
-        const isSelected = selectedIds.has(o.id);
-        const card = document.createElement('div');
-        card.id = `card-${o.id}`;
-        card.className = `bg-[#11151f] border rounded-2xl overflow-hidden card-hover flex flex-col transition-all cursor-pointer ${
-          isSelected ? 'card-selected border-amber-400' : 'border-white/10'
-        }`;
-        card.onclick = (e) => {
-          if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
-            toggleSelect(o.id);
-          }
-        };
-
-        card.innerHTML = `
-          <div class="relative h-44 w-full bg-slate-800 overflow-hidden">
-            <img src="${o.thumb}" alt="${o.title}" class="w-full h-full object-cover opacity-85">
-            <div class="absolute top-3 left-3 bg-black/80 backdrop-blur rounded-lg p-1.5 flex items-center space-x-1.5 z-10 border border-white/20">
-              <input type="checkbox" id="check-${o.id}" ${isSelected ? 'checked' : ''} onchange="toggleSelect('${o.id}')" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
-              <label for="check-${o.id}" class="text-[10px] font-bold text-amber-300 cursor-pointer select-none">SELECT FOR COHORT</label>
-            </div>
-            <div class="absolute top-3 right-3 bg-amber-500/90 text-black font-extrabold text-xs px-2.5 py-1 rounded-full shadow-lg">
-              ${o.score}x Outlier 🔥
-            </div>
-            <div class="absolute bottom-2 left-3 bg-black/75 backdrop-blur px-2 py-0.5 rounded text-[10px] text-amber-300 font-medium">
-              ${o.pillar}
-            </div>
-          </div>
-          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-            <div class="space-y-1.5">
-              <span class="text-xs text-slate-400 font-medium">${o.channel} (${o.handle})</span>
-              <h4 class="text-sm font-semibold text-white leading-snug line-clamp-2">${o.title}</h4>
-            </div>
-            <div class="space-y-3 pt-2 border-t border-white/5">
-              <div class="flex items-center justify-between text-[11px] text-slate-400">
-                <span>Views: <strong class="text-white">${o.views.toLocaleString()}</strong></span>
-                <a href="${o.ytUrl || (o.id.startsWith('http') ? o.id : (o.id.includes('_') && !/^[A-Za-z0-9_-]{11}$/.test(o.id) ? `https://www.youtube.com/${o.handle}` : `https://www.youtube.com/watch?v=${o.id}`))}" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:text-amber-300 font-semibold flex items-center space-x-1" onclick="event.stopPropagation()">
-                  <span>Watch on YouTube ↗</span>
-                </a>
-              </div>
-              <div class="text-[11px] text-amber-200/80 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 leading-relaxed">
-                <strong>🧱 Contributed Brick:</strong> ${o.brickContribution}
-              </div>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      updateFloatingBar();
-    }
-
-    function toggleSelect(id) {
-      if (selectedIds.has(id)) {
-        selectedIds.delete(id);
-      } else {
-        selectedIds.add(id);
-      }
-      renderCards();
-    }
-
-    function selectTopFour() {
-      selectedIds = new Set(["neville_name", "spatial_reality", "ai_conscious_beckwith", "loophole_manifest"]);
-      renderCards();
-    }
-
-    function clearSelection() {
-      selectedIds.clear();
-      renderCards();
-    }
-
-    function updateFloatingBar() {
-      const bar = document.getElementById('cohortActionBar');
-      if (!bar) return;
-      const countSpan = document.getElementById('selectedCount');
-      const previewSpan = document.getElementById('selectedNamesPreview');
-
-      if (countSpan) countSpan.innerText = selectedIds.size;
-
-      if (selectedIds.size > 0) {
-        bar.classList.remove('hidden');
-        const selectedTitles = Array.from(selectedIds)
-          .map(id => OUTLIER_DATABASE.find(o => o.id === id)?.channel)
-          .filter(Boolean);
-        if (previewSpan) previewSpan.innerText = `Blending: ${selectedTitles.join(' + ')}`;
-      } else {
-        bar.classList.add('hidden');
-      }
-    }
-
-    function synthesizeSelectedCohort() {
-      if (selectedIds.size === 0) return;
-      const selectedVideos = Array.from(selectedIds)
-        .map(id => OUTLIER_DATABASE.find(o => o.id === id))
-        .filter(Boolean);
-
-      populateCohortDrawer(selectedVideos);
-      openDrawer();
-    }
-
-    function populateCohortDrawer(videos) {
-      document.getElementById('drawerCohortBadge').innerText = `Cohort Blend • ${videos.length} Videos Interrogated`;
-      document.getElementById('drawerTitle').innerText = "Master Cohort Synthesis & Video #1 Strategy";
-      document.getElementById('drawerSubtitle').innerText = `Synthesizing: ${videos.map(v => v.channel).join(' • ')}`;
-
-      document.getElementById('macroCoreFinding').innerText = 
-        `Across these ${videos.length} breakout outliers, the overarching driver of views is the 'Technology-to-Metaphysics Translation Law': Every single breakout used bleeding-edge scientific/computing vocabulary (Spatial Computing, Loophole, Neural Technology, Algorithm) to validate an ancient metaphysical truth (Science of Mind, Neville Goddard, Universal Law). This bypasses the viewer's skepticism and frames spiritual mastery as an exact science.`;
-
-      const sharedBeatsContainer = document.getElementById('macroSharedBeats');
-      sharedBeatsContainer.innerHTML = `
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 1: The Diagnosis of Frustration (0:00 - 1:30)</strong>
-          <p class="text-slate-400">All ${videos.length} videos open by declaring that common practice is failing (e.g. affirmations don't work, AI prompts hallucinate, time feels like an enemy). Nobody opened with pleasantries.</p>
-        </div>
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 2: The Inversion Principle (1:30 - 4:00)</strong>
-          <p class="text-slate-400">Every outlier flips the perceived causality: Consciousness isn't inside the body/machine; the body and machines are projections inside consciousness.</p>
-        </div>
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 3: The 3-Step Protocol (4:00 - 9:00)</strong>
-          <p class="text-slate-400">Pacing shifts from high-level philosophy into an actionable 3-part framework (Role, Constraints, Feedback).</p>
-        </div>
-      `;
-
-      const hookPatternsContainer = document.getElementById('macroHookPatterns');
-      hookPatternsContainer.innerHTML = `
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5">
-          <strong class="text-amber-300">The Overlapping Formula:</strong>
-          <code class="text-amber-200 block mt-1 font-mono text-[11px]">[Stinging Diagnosis of Failure] + [Tech-Metaphor Inversion] + [Minister/Architect Authority]</code>
-        </div>
-      `;
-
-      document.getElementById('macroDeadZones').innerText = 
-        "Avoid generic 'feel good' affirmations without structural mechanics. Avoid dry Python/coding tutorials without spiritual depth. The magic is strictly in the direct, uncompromising collision of both worlds.";
-
-      const bricksList = document.getElementById('bricksContributorsList');
-      bricksList.innerHTML = '';
-      videos.forEach(v => {
-        const item = document.createElement('div');
-        item.className = "p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2";
-        item.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-amber-400 font-bold">${v.channel} (${v.score}x Outlier)</span>
-            <span class="text-[10px] text-slate-400 font-mono">${v.pillar}</span>
-          </div>
-          <div class="text-white font-medium text-xs">${v.title}</div>
-          <div class="text-[11px] text-amber-200 bg-amber-500/10 p-2.5 rounded border border-amber-500/20">
-            <strong>Contributed Brick:</strong> ${v.brickContribution}
-          </div>
-        `;
-        bricksList.appendChild(item);
-      });
-
-      const pwContainer = document.getElementById('powerWordsCombined');
-      pwContainer.innerHTML = '';
-      const allPower = videos.flatMap(v => v.deconstruction.powerWords || []);
-      allPower.forEach(pw => {
-        const item = document.createElement('div');
-        item.className = "p-3 bg-[#141924] rounded-xl border border-white/5 space-y-1";
-        item.innerHTML = `
-          <div class="flex items-center justify-between text-[10px]">
-            <span class="text-slate-400 font-mono">Original: "${pw.original}"</span>
-            <span class="text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded font-bold">${pw.trigger}</span>
-          </div>
-          <div class="text-xs font-semibold text-amber-200">
-            ➔ Charlene's Level 3 Remix: "${pw.remix}"
-          </div>
-        `;
-        pwContainer.appendChild(item);
-      });
-
-      const titlesBox = document.getElementById('cohortTitles');
-      titlesBox.innerHTML = `
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#1 (Master Blend): The Real Reason Your AI Prompts (and Intentions) Keep Failing</span>
-          <button onclick="navigator.clipboard.writeText('The Real Reason Your AI Prompts (and Intentions) Keep Failing')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#2 (Contrarian Shock): Stop Blaming the AI: Why Your Mind is Hallucinating Your Life</span>
-          <button onclick="navigator.clipboard.writeText('Stop Blaming the AI: Why Your Mind is Hallucinating Your Life')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#3 (The Architect Protocol): Prompt Engineering Your Reality: The Science of Mind Blueprint</span>
-          <button onclick="navigator.clipboard.writeText('Prompt Engineering Your Reality: The Science of Mind Blueprint')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-      `;
-
-      const hookScriptBox = document.getElementById('cohortHookScript');
-      hookScriptBox.innerHTML = `
-        <div class="p-3.5 bg-[#111622] rounded-lg border border-white/5 space-y-1.5">
-          <div class="text-amber-400 font-mono text-[10px] font-bold">[0:00 - 0:12] Visual: Fast cut between glitching prompt terminal and Charlene on the dawn summit</div>
-          <div class="text-slate-200 leading-relaxed font-serif text-xs">
-            "Have you noticed that almost everyone using AI complains about the exact same thing? 'It's hallucinating. It's giving me generic fluff.' And have you noticed spiritual seekers complain about the exact same thing with manifestation? 'Affirmations don't work. Outside forces are holding me back.'"
-          </div>
-        </div>
-        <div class="p-3.5 bg-[#111622] rounded-lg border border-white/5 space-y-1.5">
-          <div class="text-amber-400 font-mono text-[10px] font-bold">[0:12 - 0:30] Visual: Zoom in on Charlene smiling, turquoise pendant, golden blueprint lines tracing the sky</div>
-          <div class="text-slate-200 leading-relaxed font-serif text-xs">
-            "I'm Charlene Banks—licensed Science of Mind minister and cloud & AI architect. And here is the stinging truth nobody is telling you: Neither the AI nor the Universe is broken. Both systems are giving you the exact, mathematical reflection of your vague, unedited instructions. Today, we fix the prompt."
-          </div>
-        </div>
-      `;
-
-      const outlineBox = document.getElementById('cohortOutline');
-      outlineBox.innerHTML = `
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 1 (0:00 - 2:00): The Broken Mirror Diagnosis.</strong> Proving that prompt hallucinations and unfulfilled affirmations stem from identical causes.
-        </div>
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 2 (2:00 - 8:00): The 3 Core Parallels.</strong> (1) Garbage In, Garbage Out. (2) Negative Constraints. (3) The Iteration Dialogue.
-        </div>
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 3 (8:00 - End): The 60-Second Daily Prompt Protocol.</strong> How to compile your reality each morning and channel invitation.
-        </div>
-      `;
-
-      switchTab('macro');
-    }
-
-    function openDrawer() {
-      document.getElementById('drawerBackdrop').classList.remove('opacity-0', 'pointer-events-none');
-      document.getElementById('drawerPanel').classList.remove('translate-x-full');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeDrawer() {
-      document.getElementById('drawerBackdrop').classList.add('opacity-0', 'pointer-events-none');
-      document.getElementById('drawerPanel').classList.add('translate-x-full');
-      document.body.style.overflow = 'auto';
-    }
-
-    function switchTab(tab) {
-      ['macro', 'bricks', 'power', 'blueprint'].forEach(t => {
-        const btn = document.getElementById(`tabBtn-${t}`);
-        const content = document.getElementById(`tabContent-${t}`);
-        if (t === tab) {
-          btn.className = "pb-3 border-b-2 border-amber-400 text-amber-400 transition-colors whitespace-nowrap";
-          content.classList.remove('hidden');
-        } else {
-          btn.className = "pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors whitespace-nowrap";
-          content.classList.add('hidden');
-        }
-      });
-    }
-
-    function copyMasterCohortBlueprint() {
-      const text = `=== THE CONSCIOUS ARCHITECT: MASTER COHORT LEGO BRICKS SYNTHESIS ===\n` +
-        `Videos Interrogated: ${selectedIds.size} Selected Outliers\n\n` +
-        `1. MACRO INTERSECTION FINDING:\n` +
-        `Across the selected outliers, the winning driver is the 'Technology-to-Metaphysics Translation Law': Every breakout used bleeding-edge scientific/computing vocabulary to validate an ancient metaphysical truth.\n\n` +
-        `2. MASTER TITLES:\n` +
-        `• #1: The Real Reason Your AI Prompts (and Intentions) Keep Failing\n` +
-        `• #2: Stop Blaming the AI: Why Your Mind is Hallucinating Your Life\n` +
-        `• #3: Prompt Engineering Your Reality: The Science of Mind Blueprint\n\n` +
-        `3. DUAL-LAYER HOOK SCRIPT (0:00 - 0:45):\n` +
-        `[Visual: Fast cut between glitching prompt terminal and Charlene on the dawn summit]\n` +
-        `"Have you noticed that almost everyone using AI complains about the exact same thing? 'It's hallucinating. It's giving me generic fluff.' And have you noticed spiritual seekers complain about the exact same thing with manifestation? 'Affirmations don't work. Outside forces are holding me back.'"\n\n` +
-        `[Visual: Zoom in on Charlene smiling, turquoise pendant, golden blueprint lines tracing the sky]\n` +
-        `"I'm Charlene Banks—licensed Science of Mind minister and cloud & AI architect. And here is the stinging truth nobody is telling you: Neither the AI nor the Universe is broken. Both systems are giving you the exact, mathematical reflection of your vague, unedited instructions. Today, we fix the prompt."\n\n` +
-        `4. 3-ACT VIDEO OUTLINE:\n` +
-        `Act 1 (0:00 - 2:00): The Broken Mirror Diagnosis (Hallucinations = Limiting Beliefs).\n` +
-        `Act 2 (2:00 - 8:00): The 3 Core Parallels (Garbage In/Garbage Out, Negative Constraints, Iterative Dialogue).\n` +
-        `Act 3 (8:00 - End): The 60-Second Daily Prompt Protocol & Call to Action.\n`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        const status = document.getElementById('copyStatusText');
-        status.innerText = "✅ Master Cohort Synthesis copied to clipboard!";
-        status.classList.add('text-emerald-400');
-        setTimeout(() => {
-          status.innerText = "Ready to export to Obsidian / Notion";
-          status.classList.remove('text-emerald-400');
-        }, 3000);
-      });
-    }
-
-    function copyMasterScript() {
-      const s3Raw = localStorage.getItem(STORAGE_KEY_STAGE3);
-      const s3 = s3Raw ? JSON.parse(s3Raw) : DEFAULT_STAGE3;
-      const fullText = s3.map(s => `=== ${s.act} ===\n\n${s.content}`).join('\n\n=========================================\n\n');
-      navigator.clipboard.writeText(fullText).then(() => {
-        alert("✅ Full Teleprompter Script copied to clipboard!");
-      });
-    }
-
-    // --- REGENERATE & RECOMPILE ENGINES ---
-    function regenerateStagesFromCohort() {
-      if (selectedIds.size === 0) {
-        alert("Please select at least 1 or 2 outliers from the radar first!");
-        return;
-      }
-      const selectedVideos = Array.from(selectedIds)
-        .map(id => OUTLIER_DATABASE.find(o => o.id === id))
-        .filter(Boolean);
-
-      const title = document.querySelector('#stageView-1 h2')?.innerText || "The Real Reason Your AI Prompts (and Intentions) Keep Failing";
-      const channels = selectedVideos.map(v => v.channel).join(', ');
-      const bricks = selectedVideos.map(v => v.brickContribution).join(' ');
-
-      // Synthesize fresh Stage 2 based on the active cohort
-      const newStage2 = {
-        breakout1: `When I was training enterprise teams for Google, I watched brilliant engineers struggle with the exact same thing my congregation struggles with on Sunday. As ${selectedVideos[0]?.channel || 'our peers'} showed, the problem is never the tool—it is our subconscious resistance to being specific.`,
-        breakout2: `Stop getting mad at the mirror. In the words of the ancient spiritual masters, the creative medium reproduces according to law. The algorithm isn't testing you; it's compiling the background fear loops you refuse to shut down.`,
-        breakout3: `You are not an employee of these algorithms. You are the Conscious Architect. Silicon only calculates; you possess Consciousness. Start acting like the creator.`,
-        hook05: `If your AI prompts feel like they're hallucinating generic fluff... or your daily intentions and affirmations feel completely stuck in neutral—the tool isn't broken.`,
-        hook15: `As an official Google Trainer, I’ve taught thousands how to prompt AI. But as a licensed Science of Mind minister, here's what corporate stages never let me tell you...`,
-        hook30: `Both systems run on the exact same universal law: Vague input guarantees chaotic output. In the next 12 minutes, I'm giving you the 3-step prompt architecture that fixes both.`,
-        c1_promise: `Why 90% of people throw up their hands and declare that AI and manifestation are 'overrated.'`,
-        c1_progress: `In AI: typing 'Write an email' yields bland corporate cardboard. In Spirit: telling the universe 'I just want things to be better' gives Divine Mind zero constraints, compiling into generic drift.`,
-        c1_payoff: `Vagueness isn't humility; vagueness is fear of being specific. Once you give your mind clear parameters, the slop stops.`,
-        c2_promise: `How to eliminate the background 'hallucinations' that derail your projects and your peace.`,
-        c2_progress: `In LLMs: models invent plausible-sounding fiction when boundary constraints are missing. In Subconscious: when you launch a goal without negative constraints, your mind fills the vacuum with childhood memories of struggle.`,
-        c2_payoff: `Constraints are not limitations; constraints are the guardrails of reality. In New Thought, this is the spiritual practice of 'Denials.'`,
-        c3_promise: `The single mindset shift that separates amateur prompt users from master architects.`,
-        c3_progress: `The One-Shot Miracle fantasy: rookie users expect one magic prompt to create an app. In Spirit: speaking one affirmation Monday and quitting Tuesday when the check isn't in the mail. Manifestation is an interactive compile dialogue, not a vending machine.`,
-        c3_payoff: `The delay between thought and reality is not a wall; it's the gestation period / compile window. Stop quitting on generation one.`
-      };
-
-      // Save to localStorage
-      localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(newStage2));
-      loadState();
-
-      // Automatically recompile Stage 3 script as well so both stages refresh together
-      recompileScriptFromStage2();
-
-      // Switch to Stage 2 so user sees the refreshed blueprint
-      setStage(2);
-      showSaveBadge(`✨ Stages 2 & 3 regenerated from ${selectedVideos.length} outliers!`);
-      syncToFirestore();
-    }
-
     function recompileScriptFromStage2() {
-      // Gather current Stage 2 user edits
       const s2Raw = localStorage.getItem(STORAGE_KEY_STAGE2);
       const s2 = s2Raw ? JSON.parse(s2Raw) : DEFAULT_STAGE2;
+      const activeId = localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id;
+      const cat = getCatalog();
+      const current = cat.find(v => v.id === activeId) || LAUNCH_CATALOG[0];
 
-      const updatedScript = [
-        {
-          act: "ACT I: THE HOOK & USP FRONT-LOAD (0:00 - 1:30)",
-          content: `[PACING / MUSIC: Ambient low-fi pulse starts—contemplative, sleek, forward-moving.]\n[VISUAL: Rapid montage: cursor blinking in empty prompt box ➔ smartphone screen with unread affirmation ➔ Charlene on dawn summit.]\n[ON-SCREEN TEXT: "STOP BLAMING THE AI"]\n\nCHARLENE (SPOKEN):\n${s2.hook05}\n\n[PACING / MUSIC: Music drops out for half a beat. Crisp vocal isolation.]\n[VISUAL: Smooth camera push-in. Golden blueprint lines trace across the mist.]\n[ON-SCREEN TEXT: "CHARLENE BANKS | Google Trainer & Science of Mind Minister"]\n\nCHARLENE (SPOKEN):\n${s2.hook15}\n\n[VISUAL: Split-screen graphic: AI prompt box compiling to code ➔ Human silhouette compiling to physical form.]\n[ON-SCREEN TEXT: "VAGUE INPUT = VAGUE REALITY"]\n\nCHARLENE (SPOKEN):\n${s2.hook30}`
-        },
-        {
-          act: "ACT II, CYCLE 1: GARBAGE IN, GARBAGE OUT (1:30 - 4:30)",
-          content: `[PACING / MUSIC: Subtle rhythmic synth layers in; warm, steady educational rhythm.]\n[VISUAL: Graphic of amateur prompt typing: 'Write me a good marketing email.']\n[ON-SCREEN TEXT: "ERROR #1: ASSUMED CONTEXT"]\n\nCHARLENE (SPOKEN):\n${s2.c1_promise}\n\n[PROGRESS / VALUE DELIVERY: GOOGLE TRAINER INSTRUCTION]\n[VISUAL: Cut back to Charlene smiling knowingly.]\n[ON-SCREEN TEXT: "THE 4 PROMPT PILLARS: ROLE • CONTEXT • CONSTRAINTS • OBJECTIVE"]\n\nCHARLENE (SPOKEN):\n${s2.c1_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Bold gold text overlay across the screen.]\n[ON-SCREEN TEXT: "CLARITY IS COURTESY TO THE DIVINE"]\n\nCHARLENE (SPOKEN):\n${s2.c1_payoff}`
-        },
-        {
-          act: "ACT II, CYCLE 2: NEGATIVE CONSTRAINTS & HALLUCINATIONS (4:30 - 7:30)",
-          content: `[PACING / MUSIC: Pacing picks up slightly; light tech percussion.]\n[VISUAL: Graphic of AI output citing fake sources with red error highlights.]\n[ON-SCREEN TEXT: "ERROR #2: THE UNCONSTRAINED VOID"]\n\nCHARLENE (SPOKEN):\n${s2.c2_promise}\n\n[PROGRESS / VALUE DELIVERY: TECHNICAL & METAPHYSICAL RULES]\n[VISUAL: Cut to Charlene. Golden code lines float in space.]\n[ON-SCREEN TEXT: "NEGATIVE CONSTRAINTS = WHAT IS FORBIDDEN"]\n\nCHARLENE (SPOKEN):\n${s2.c2_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Charlene touches her turquoise pendant, smiling.]\n[ON-SCREEN TEXT: "DEFINE THE BOUNDARIES OF YOUR MIND"]\n\nCHARLENE (SPOKEN):\n${s2.c2_payoff}`
-        },
-        {
-          act: "ACT II, CYCLE 3: THE ITERATION DIALOGUE (7:30 - 9:30)",
-          content: `[PACING / MUSIC: Forward-leaning momentum; inspiring and rhythmic.]\n[VISUAL: Simulation: Version 1 (C-) ➔ Parameter Adjustment ➔ Version 3 (Masterpiece).]\n[ON-SCREEN TEXT: "ERROR #3: THE ONE-SHOT FANTASY"]\n\nCHARLENE (SPOKEN):\n${s2.c3_promise}\n\n[PROGRESS / VALUE DELIVERY]\n[VISUAL: Cut to Charlene on the summit, morning light washing over the frame.]\n[ON-SCREEN TEXT: "MANIFESTATION IS AN INTERACTIVE CONVERSATION"]\n\nCHARLENE (SPOKEN):\n${s2.c3_progress}\n\n[PAYOFF / SPIRITUAL INSIGHT]\n[VISUAL: Golden spiral gently connects to sunrise peaks.]\n[ON-SCREEN TEXT: "THE COMPILE WINDOW"]\n\nCHARLENE (SPOKEN):\n${s2.c3_payoff}`
-        },
-        {
-          act: "ACT III: THE UNFILTERED CLIMAX & SOVEREIGNTY SHIFT (9:30 - 11:30)",
-          content: `[PACING / MUSIC: Intimate, resonant cello and ambient pad. Pure heart space.]\n[VISUAL: Tight, intimate shot of Charlene speaking from sisterly authenticity.]\n[ON-SCREEN TEXT: "A MOMENT OF RAW TRUTH"]\n\nCHARLENE (SPOKEN):\n${s2.breakout1}\n\n${s2.breakout2}\n\n${s2.breakout3}`
-        },
-        {
-          act: "ACT IV: THE 60-SECOND PROTOCOL & CALL TO ACTION (11:30 - END)",
-          content: `[PACING / MUSIC: Inspiring, uplifting crescendo; confident and luminous.]\n[VISUAL: Wide cinematic shot of Charlene on the rock bluff overlooking the sunrise.]\n[ON-SCREEN TEXT: "THE 60-SECOND MORNING PROTOCOL"]\n\nCHARLENE (SPOKEN):\nSo here is your assignment starting tomorrow morning. Before you touch your phone, before you open your laptop:\n\n1. Declare the Role: 'I am operating today as the Conscious Architect of my reality.'\n2. Set the Negative Constraints: 'I refuse to allow the background hallucinations of doubt, scarcity, or yesterday's old fear loops into my mental runtime.'\n3. Stay in the Dialogue: 'I iterate with patience, knowing the law executes what I believe.'\n\n[VISUAL: The Conscious Architect logo badge appears cleanly: Champagne gold and crisp white.]\n[ON-SCREEN TEXT: "SUBSCRIBE • THE CONSCIOUS ARCHITECT WITH CHARLENE BANKS"]\n\nCHARLENE (SPOKEN):\nIf you are ready to master your internal operating system... and learn how to use bleeding-edge AI without ever compromising your spiritual sovereignty... hit the subscribe button right now.\n\nWelcome to The Conscious Architect.\n\nThink deeply. Build boldly. And remember: You are the one writing the code.\n\nI'll see you in the next build.\n\n[PACING / MUSIC: Final warm, resonant chord fades smoothly to silence.]\n[VISUAL: Fade to black with channel banner artwork, subscribe button, and next recommended video card.]`
-        }
-      ];
+      const updatedScript = compileScriptFromBlueprint(s2, current.title, current.pillar);
 
-      // Save to localStorage and re-render Stage 3
       localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(updatedScript));
       renderScriptBlocks(updatedScript);
 
-      // Persist into catalog for active ideation
-      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
-      const cat = getCatalog();
       const idx = cat.findIndex(v => v.id === activeId);
       if (idx !== -1) {
         cat[idx].stage3 = updatedScript;
         localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
       }
 
-      // Switch to Stage 3 to view the recompiled teleprompter script
       setStage(3);
-      showSaveBadge("✨ Teleprompter script recompiled with your Stage 2 analogies!");
+      showSaveBadge("✨ Teleprompter script compiled with 7-beat journey!");
       syncToFirestore();
     }
 
@@ -1516,16 +903,12 @@ I'll see you in the next build.
     function getCatalog() {
       const raw = localStorage.getItem(STORAGE_KEY_CATALOG);
       if (raw) {
-        try { return JSON.parse(raw); } catch (e) {}
+        try { 
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.length > 0) return parsed;
+        } catch (e) {}
       }
-      return [
-        {
-          id: "video-1-prompting-intentions",
-          title: "The Real Reason Your AI Prompts (and Intentions) Keep Failing",
-          stage2: DEFAULT_STAGE2,
-          stage3: DEFAULT_STAGE3
-        }
-      ];
+      return LAUNCH_CATALOG;
     }
 
     function saveCatalog(cat) {
@@ -1608,76 +991,74 @@ I'll see you in the next build.
 
     function createAndLaunchNewIdeation() {
       const topic = document.getElementById('inputNewTopic').value.trim();
-      const angle = document.getElementById('inputNewAngle').value.trim();
+      const pillar = document.getElementById('inputNewPillar').value;
+      const techConcept = document.getElementById('inputNewTech').value.trim();
+      const notes = document.getElementById('inputNewNotes').value.trim();
 
       if (!topic) {
-        alert("Please enter a seed topic or question!");
+        alert("Please enter a video title or concept!");
         return;
       }
 
-      const newId = `video-${Date.now()}`;
+      const newId = 'video-' + Date.now();
       
-      // Synthesize new Stage 2 based on topic & angle
+      // Intelligent Outline Mapping: Extract specific tension, tech mirror, and practice
+      let beat1 = "If your life feels like it is giving you vague results, the problem may not be effort. It may be that you have never clearly named what you are building. Today, we look at " + topic + ".";
+      let beat2 = "Most of us were taught to work hard. Far fewer of us were taught to choose a direction, set constraints, and revise with compassion.";
+      let beat3 = techConcept 
+        ? "In technology and systems design, " + techConcept + " dictates what is possible. When you give a system vague parameters, you get chaotic output."
+        : "In systems architecture, if you build a high-speed pipeline on top of a fragmented data structure, all you do is accelerate your errors.";
+      let bridge_tech = "A system only does what its underlying architecture and constraints permit.";
+      let bridge_limit = "Human life is not a chatbot or an algorithm, and no amount of positive thinking gives us control over illness, grief, or other people.";
+      let bridge_parallel = "But clarity changes what we notice, choose, ask for, and act upon.";
+      let beat5 = "The Conscious Practice:\n1. Desired Outcome: What do you want to create or change?\n2. Context: What is true about your situation right now?\n3. Values: What non-negotiables must remain intact?\n4. First Next Action: What is one concrete move in the next 7 days?\n5. Review Date: When will you pause, learn, and revise?";
+      let beat6 = "In my training rooms with enterprise teams, I often see people paralyzed by the complexity of the tools. The moment we anchor their intention in human values, clarity replaces fear.";
+      let beat7 = "This week, do not demand a perfect answer from life. Offer it a clearer question. Subscribe to The Conscious Architect, and I will see you in the next build.";
+
+      // If user provided rich notes, incorporate them into the beats
+      if (notes) {
+        const paragraphs = notes.split(/\n+/).filter(p => p.trim().length > 10);
+        if (paragraphs[0]) beat1 = "Let's talk about " + topic + ". " + paragraphs[0];
+        if (paragraphs[1]) beat2 = paragraphs[1];
+        if (paragraphs[2]) beat6 = paragraphs[2];
+      }
+
       const newStage2 = {
-        breakout1: `When I was training enterprise teams for Google, I watched people struggle with ${topic}. On corporate stages, I could never speak the spiritual truth: that technology is simply a mirror of internal consciousness.`,
-        breakout2: `Stop blaming outside algorithms. When ${topic} feels chaotic, it is simply compiling the background assumptions you haven't yet examined.`,
-        breakout3: `You are the Conscious Architect. You possess Consciousness; the machine only possesses calculation. Start acting like the creator.`,
-        hook05: `If you're trying to figure out ${topic}, and it feels confusing or overwhelming—the system isn't broken.`,
-        hook15: `As an official Google Trainer, I teach the technical mechanics. But as a Science of Mind minister, here is what corporate platforms won't tell you...`,
-        hook30: `In the next 12 minutes, I'm breaking down the exact blueprint to master ${topic} without losing your soul.`,
-        c1_promise: `The #1 mistake people make when approaching ${topic}.`,
-        c1_progress: `Technical breakdown: why vague instructions cause failure. Metaphysical parallel: why Universal Mind requires precise intentional architecture.`,
-        c1_payoff: `Clarity is courtesy to the divine. Once you define the boundaries, clarity replaces chaos.`,
-        c2_promise: `How to eliminate the background doubts and noise around ${topic}.`,
-        c2_progress: `Using negative constraints to prevent mental and algorithmic hallucinations.`,
-        c2_payoff: `In New Thought, this is the power of Denials—refusing to give authority to old fear loops.`,
-        c3_promise: `The iteration loop: why masters never quit on step one.`,
-        c3_progress: `Manifestation and prompting are ongoing dialogues, not a one-shot miracle.`,
-        c3_payoff: `The delay is just the compile window. Stay in conscious conversation until reality matches the blueprint.`
+        pillar,
+        beat1,
+        beat2,
+        beat3,
+        bridge_tech,
+        bridge_limit,
+        bridge_parallel,
+        beat5,
+        beat6,
+        beat7
       };
 
-      // Synthesize new Stage 3 Script
-      const newStage3 = [
-        {
-          act: `ACT I: THE HOOK & USP FRONT-LOAD (0:00 - 1:30)`,
-          content: `[PACING / MUSIC: Ambient sleek pulse.]\n[VISUAL: Charlene at the dawn summit overlook, looking directly into the camera.]\n[ON-SCREEN TEXT: "${topic.toUpperCase()}"]\n\nCHARLENE (SPOKEN):\nIf you've been wondering about ${topic}... and it feels like everyone is missing the point... I have some news for you.\n\nFor years, as an official Google Trainer, I’ve taught thousands how to work with modern tools. But as a licensed Science of Mind minister, here's what corporate stages would never let me say out loud:\n\n${angle ? angle : 'Consciousness and technology run on the exact same universal law.'}\n\nToday, we look at the source code.`
-        },
-        {
-          act: `ACT II: THE 3 CORE PRINCIPLES (1:30 - 8:00)`,
-          content: `[PACING / MUSIC: Warm educational rhythm.]\n[VISUAL: Split graphics showing tech workflows and spiritual principles.]\n\nCHARLENE (SPOKEN):\nLet's break down the 3 core laws that govern ${topic}...\n\n1. Garbage In, Garbage Out: Vague intent produces chaotic drift.\n2. Negative Constraints: Setting boundaries on what is no longer allowed in your mental runtime.\n3. The Iteration Dialogue: Why manifestation is a conversation, not a vending machine.`
-        },
-        {
-          act: `ACT III: THE UNFILTERED TRUTH & SOVEREIGNTY SHIFT (8:00 - 10:30)`,
-          content: `[PACING / MUSIC: Intimate, resonant cello.]\n[VISUAL: Tight shot on Charlene speaking from the heart.]\n\nCHARLENE (SPOKEN):\nStop shrinking before these tools. You are the Conscious Architect. You possess the spark of the Infinite Mind. Start acting like the one who holds the pen.`
-        },
-        {
-          act: `ACT IV: THE 60-SECOND PROTOCOL & CALL TO ACTION (10:30 - END)`,
-          content: `[PACING / MUSIC: Luminous crescendo.]\n[VISUAL: Wide sunrise shot on the summit.]\n\nCHARLENE (SPOKEN):\nHere is your daily protocol starting tomorrow morning...\n\nSubscribe to The Conscious Architect. Think deeply. Build boldly. I'll see you in the next build.`
-        }
-      ];
+      const newStage3 = compileScriptFromBlueprint(newStage2, topic, pillar);
 
       // Add to catalog
       const cat = getCatalog();
       cat.push({
         id: newId,
         title: topic,
+        pillar: pillar,
         stage2: newStage2,
         stage3: newStage3
       });
       saveCatalog(cat);
 
-      // Switch to new ideation
+      // Switch to new ideation and jump to Stage 2
       switchIdeation(newId);
       closeNewIdeationModal();
       document.getElementById('inputNewTopic').value = '';
-      document.getElementById('inputNewAngle').value = '';
+      document.getElementById('inputNewTech').value = '';
+      document.getElementById('inputNewNotes').value = '';
 
-      // Immediately navigate to Stage 2 so user sees their new blueprint and script
       setStage(2);
-
-      // Sync to Firestore
       syncToFirestore();
-      alert(`✨ New Ideation created: "${topic}"! Navigating to Stage 2 Blueprint.`);
+      alert('✨ Generated 7-beat blueprint for: "' + topic + '" (' + pillar + ')!');
     }
 
     // --- AUTHENTICATION & ACCESS GATE ---
