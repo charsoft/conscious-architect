@@ -103,12 +103,15 @@
       </div>
 
       <!-- Ideation Selector & New Video Button -->
-      <div class="flex items-center space-x-3 text-xs">
+      <div class="flex items-center space-x-2 text-xs">
         <select id="ideationSelector" onchange="switchIdeation(this.value)" class="bg-[#141924] border border-amber-500/30 rounded-xl px-3 py-1.5 text-amber-300 text-xs font-semibold focus:outline-none focus:border-amber-400">
           <option value="video-1-prompting-intentions">📁 Video #1: Prompting &amp; Intentions</option>
         </select>
+        <button onclick="deleteCurrentIdeation()" title="Delete active video ideation" class="px-2.5 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/50 rounded-xl transition-all flex items-center space-x-1" title="Delete current video">
+          <span>🗑️</span>
+        </button>
         <button onclick="openNewIdeationModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold rounded-xl shadow transition-all flex items-center space-x-1.5 whitespace-nowrap">
-          <span>➕ New Video Ideation</span>
+          <span>➕ New Video</span>
         </button>
       </div>
     </div>
@@ -1494,6 +1497,31 @@ I'll see you in the next build.
 
       loadState();
       showSaveBadge(`Switched to: ${found.title.slice(0, 20)}...`);
+    }
+
+    function deleteCurrentIdeation() {
+      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+      const cat = getCatalog();
+      const current = cat.find(v => v.id === activeId);
+      const title = current ? current.title : "this video";
+
+      if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+
+      let remaining = cat.filter(v => v.id !== activeId);
+      if (remaining.length === 0) {
+        remaining = [
+          {
+            id: "video-1-prompting-intentions",
+            title: "The Real Reason Your AI Prompts (and Intentions) Keep Failing",
+            stage2: DEFAULT_STAGE2,
+            stage3: DEFAULT_STAGE3
+          }
+        ];
+      }
+
+      saveCatalog(remaining);
+      switchIdeation(remaining[0].id);
+      showSaveBadge("🗑️ Ideation deleted");
     }
 
     function openNewIdeationModal() {
