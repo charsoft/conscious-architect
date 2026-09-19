@@ -59,6 +59,35 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
+        elif self.path == '/api/ideations':
+            if not self.is_authenticated():
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': 'Unauthorized'}).encode('utf-8'))
+                return
+
+            if db is None:
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'ideations': []}).encode('utf-8'))
+                return
+
+            try:
+                ideations_ref = db.collection('video_ideations').order_by('lastUpdated', direction=firestore.Query.DESCENDING).limit(50)
+                docs = ideations_ref.stream()
+                ideations = [d.to_dict() for d in docs]
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'ideations': ideations}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+
         elif self.path == '/api/health':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')

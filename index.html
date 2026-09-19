@@ -818,8 +818,17 @@
     const DEFAULT_STAGE3 = LAUNCH_CATALOG[0].stage3;
 
     // --- STATE MANAGEMENT (LOCAL STORAGE PERSISTENCE) ---
-    const STORAGE_KEY_STAGE2 = "tca_stage2_data";
-    const STORAGE_KEY_STAGE3 = "tca_stage3_data";
+    const STORAGE_KEY_STAGE2 = "tca_stage2_data_v2";
+    const STORAGE_KEY_STAGE3 = "tca_stage3_data_v2";
+    const STORAGE_KEY_CATALOG = "tca_ideations_catalog_v2";
+
+    // Auto-migrate: Purge stale v1 keys if v2 is not yet initialized
+    if (localStorage.getItem("tca_ideations_catalog") && !localStorage.getItem(STORAGE_KEY_CATALOG)) {
+      localStorage.removeItem("tca_ideations_catalog");
+      localStorage.removeItem("tca_stage2_data");
+      localStorage.removeItem("tca_stage3_data");
+      localStorage.removeItem("tca_active_ideation_id");
+    }
 
     function loadState() {
       // Stage 2
@@ -1440,14 +1449,15 @@
 
     
     // --- NEW IDEATION CREATOR & MULTI-VIDEO CATALOG ---
-    const STORAGE_KEY_CATALOG = "tca_ideations_catalog";
 
     function getCatalog() {
       const raw = localStorage.getItem(STORAGE_KEY_CATALOG);
       if (raw) {
         try { 
           const parsed = JSON.parse(raw);
-          if (parsed && parsed.length > 0) return parsed;
+          if (parsed && parsed.length > 0 && parsed.some(v => v.id.includes('video-1-stop-living-by-default') || v.id.includes('video-2-ai-clarity'))) {
+            return parsed;
+          }
         } catch (e) {}
       }
       return LAUNCH_CATALOG;
@@ -1707,6 +1717,42 @@
       }
     }
 
+    async function fetchCloudIdeations() {
+      const studioKey = localStorage.getItem("tca_studio_key") || "";
+      if (!studioKey) return;
+      try {
+        const res = await fetch('/api/ideations', {
+          headers: { 'Authorization': 'Bearer ' + studioKey }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ideations && data.ideations.length > 0) {
+          const cat = getCatalog();
+          data.ideations.forEach(cloudItem => {
+            const id = cloudItem.ideationId || cloudItem.id;
+            if (!id) return;
+            const existingIdx = cat.findIndex(v => v.id === id);
+            const itemData = {
+              id: id,
+              title: cloudItem.title,
+              pillar: cloudItem.pillar || "The Architecture of Agency",
+              stage2: cloudItem.stage2_signatureJourney || cloudItem.stage2,
+              stage3: cloudItem.stage3
+            };
+            if (existingIdx !== -1) {
+              cat[existingIdx] = { ...cat[existingIdx], ...itemData };
+            } else {
+              cat.push(itemData);
+            }
+          });
+          saveCatalog(cat);
+          loadState();
+        }
+      } catch (e) {
+        console.warn("Could not load cloud ideations:", e);
+      }
+    }
+
     function lockStudio() {
       localStorage.removeItem("tca_studio_key");
       document.getElementById('inputStudioKey').value = '';
@@ -1719,6 +1765,7 @@
     loadState();
     updateIdeationSelector(getCatalog());
     fetchLiveOutliers();
+    fetchCloudIdeations();
   </script>
 </body>
 </html>
