@@ -52,7 +52,7 @@ def run_daily_sync():
                 continue
                 
             views_list = [e.get('view_count', 0) for e in entries if e.get('view_count')]
-            median_views = float(np.median(views_list)) if views_list else 1000.0
+            median_views = max(1000.0, float(np.median(views_list))) if views_list else 1000.0
 
             for e in entries:
                 vid = e.get('id')
@@ -60,6 +60,10 @@ def run_daily_sync():
                     continue
                     
                 views = int(e.get('view_count') or 0)
+                # Filter out statistical noise: require at least 2,500 views to qualify as a trend candidate
+                if views < 2500:
+                    continue
+
                 duration = int(e.get('duration') or 0)
                 outlier_score = round(views / median_views, 2) if median_views > 0 else 1.0
                 
