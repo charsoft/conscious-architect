@@ -892,6 +892,15 @@ I'll see you in the next build.
       };
       localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(s2Data));
 
+      // Persist into catalog for active ideation
+      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+      const cat = getCatalog();
+      const idx = cat.findIndex(v => v.id === activeId);
+      if (idx !== -1) {
+        cat[idx].stage2 = s2Data;
+        localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
+      }
+
       showSaveBadge("✓ Autosaved Locally");
     }
 
@@ -901,6 +910,16 @@ I'll see you in the next build.
       if (s3[index]) {
         s3[index].content = newContent;
         localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(s3));
+
+        // Persist into catalog for active ideation
+        const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+        const cat = getCatalog();
+        const idx = cat.findIndex(v => v.id === activeId);
+        if (idx !== -1) {
+          cat[idx].stage3 = s3;
+          localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
+        }
+
         showSaveBadge("✓ Script Autosaved Locally");
       }
     }
@@ -963,10 +982,14 @@ I'll see you in the next build.
 
       const fullScript = s3.map(sec => `=== ${sec.act} ===\n\n${sec.content}`).join('\n\n=========================================\n\n');
 
+      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+      const cat = getCatalog();
+      const currentVideo = cat.find(v => v.id === activeId) || { title: "The Real Reason Your AI Prompts (and Intentions) Keep Failing" };
+
       const payload = {
-        ideationId: "video-1-prompting-intentions",
+        ideationId: activeId,
         channel: "The Conscious Architect with Charlene Banks",
-        title: "The Real Reason Your AI Prompts (and Intentions) Keep Failing",
+        title: currentVideo.title,
         status: "script_refined",
         lastUpdated: new Date().toISOString(),
         stage2_intentionalityBlueprint: {
@@ -1355,7 +1378,10 @@ I'll see you in the next build.
       localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(newStage2));
       loadState();
 
-      // Automatically switch to Stage 2 so user sees the refreshed blueprint
+      // Automatically recompile Stage 3 script as well so both stages refresh together
+      recompileScriptFromStage2();
+
+      // Switch to Stage 2 so user sees the refreshed blueprint
       setStage(2);
       showSaveBadge(`✨ Stages 2 & 3 regenerated from ${selectedVideos.length} outliers!`);
       syncToFirestore();
@@ -1396,6 +1422,15 @@ I'll see you in the next build.
       // Save to localStorage and re-render Stage 3
       localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(updatedScript));
       renderScriptBlocks(updatedScript);
+
+      // Persist into catalog for active ideation
+      const activeId = localStorage.getItem("tca_active_ideation_id") || "video-1-prompting-intentions";
+      const cat = getCatalog();
+      const idx = cat.findIndex(v => v.id === activeId);
+      if (idx !== -1) {
+        cat[idx].stage3 = updatedScript;
+        localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
+      }
 
       // Switch to Stage 3 to view the recompiled teleprompter script
       setStage(3);
@@ -1448,6 +1483,10 @@ I'll see you in the next build.
       localStorage.setItem("tca_active_ideation_id", id);
       localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(found.stage2));
       localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(found.stage3));
+
+      // Update UI selector dropdown value
+      const sel = document.getElementById('ideationSelector');
+      if (sel) sel.value = id;
 
       // Update UI title banner
       const titleElem = document.querySelector('#stageView-1 h2');
@@ -1536,9 +1575,12 @@ I'll see you in the next build.
       document.getElementById('inputNewTopic').value = '';
       document.getElementById('inputNewAngle').value = '';
 
+      // Immediately navigate to Stage 2 so user sees their new blueprint and script
+      setStage(2);
+
       // Sync to Firestore
       syncToFirestore();
-      alert(`✨ New Ideation created: "${topic}"! You can now edit its blueprint and script.`);
+      alert(`✨ New Ideation created: "${topic}"! Navigating to Stage 2 Blueprint.`);
     }
 
     // --- AUTHENTICATION & ACCESS GATE ---
