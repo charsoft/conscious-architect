@@ -42,6 +42,12 @@ jobs:
         run: |
           docker build -t "${{ env.IMAGE }}:${{ github.sha }}" -t "${{ env.IMAGE }}:latest" .
 
+      - name: Test Python behavior in the deployment image
+        run: docker run --rm "${{ env.IMAGE }}:${{ github.sha }}" python -B -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Test browser script behavior
+        run: node --test tests/script-handoff.test.cjs tests/draft-editor.test.cjs
+
       - name: Push Image to Artifact Registry
         run: |
           docker push "${{ env.IMAGE }}:${{ github.sha }}"
@@ -57,7 +63,7 @@ jobs:
             --allow-unauthenticated \
             --port 8080 \
             --service-account "${{ env.RUNTIME_SERVICE_ACCOUNT }}" \
-            --set-env-vars "GCP_PROJECT_ID=${{ env.PROJECT_ID }}"
+            --update-env-vars "GCP_PROJECT_ID=${{ env.PROJECT_ID }},TRANSCRIPTION_ENABLED=false"
 
       - name: Show Live Service URL
         run: |

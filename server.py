@@ -4,7 +4,13 @@ import json
 import os
 import sys
 from datetime import datetime
+from urllib.parse import unquote, urlsplit
 from google.cloud import firestore
+from content_policy import excluded, annotate
+from research import analyze_video
+from drafting import create_draft
+from persistence import save_with_history
+from transcription import store_uploaded_transcript
 
 PORT = int(os.environ.get("PORT", 8080))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +28,14 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
+    def send_head(self):
+        # Only browser assets are public; never expose backend/config/test files.
+        path = unquote(urlsplit(self.path).path)
+        if path not in ('/', '/index.html', '/draft-editor.js'):
+            self.send_error(404, 'Not found')
+            return None
+        return super().send_head()
+
     def is_authenticated(self):
         auth_header = self.headers.get('Authorization', '')
         if auth_header.startswith('Bearer '):
@@ -30,6 +44,15 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
         return False
 
     def do_GET(self):
+        if self.path == '/api/capabilities':
+            if not self.is_authenticated():
+                self.send_error(401, 'Unauthorized')
+                return
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'transcriptionEnabled': os.environ.get('TRANSCRIPTION_ENABLED') == 'true'}).encode('utf-8'))
+            return
         if self.path == '/api/outliers':
             if not self.is_authenticated():
                 self.send_response(401)
@@ -46,13 +69,21 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
             try:
-                videos_ref = db.collection('trend_videos').order_by('outlierScore', direction=firestore.Query.DESCENDING).limit(50)
-                docs = videos_ref.stream()
-                outliers = [d.to_dict() for d in docs]
+                # Filter before limiting so music cannot crowd out eligible results.
+                docs = db.collection('trend_videos').stream()
+                outliers, excluded_ids = [], []
+                for snapshot in docs:
+                    video = dict(snapshot.to_dict(), videoId=snapshot.id)
+                    if excluded(video):
+                        excluded_ids.append(snapshot.id)
+                    else:
+                        outliers.append(annotate(video))
+                outliers.sort(key=lambda v: (v['stale'], -(v.get('outlierScore') or 0)))
+                outliers = outliers[:50]
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps({'outliers': outliers}).encode('utf-8'))
+                self.wfile.write(json.dumps({'outliers': outliers, 'excludedIds': excluded_ids}).encode('utf-8'))
             except Exception as e:
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
@@ -119,6 +150,94 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
+        elif self.path == '/api/transcribe':
+            if not self.is_authenticated():
+                self.send_error(401, 'Unauthorized')
+                return
+            if os.environ.get('TRANSCRIPTION_ENABLED') != 'true':
+                self.send_error(503, 'Transcription is disabled pending model-access verification')
+                return
+            if db is None:
+                self.send_error(503, 'Transcription requires Firestore')
+                return
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length <= 12 * 1024 * 1024:
+                    raise ValueError('Upload request exceeds 12 MiB')
+                result = store_uploaded_transcript(db, json.loads(self.rfile.read(length)))
+                response = json.dumps(result).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(response)
+            except ValueError as error:
+                self.send_response(400)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(error)}).encode('utf-8'))
+            except Exception as error:
+                print(f'Transcription failed: {type(error).__name__}', flush=True)
+                self.send_error(502, 'Transcription failed; no research findings were invented')
+
+        elif self.path == '/api/draft':
+            if not self.is_authenticated():
+                self.send_error(401, 'Unauthorized')
+                return
+            if db is None:
+                self.send_error(503, 'Drafting requires Firestore')
+                return
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length <= 65536:
+                    raise ValueError('Request must be 1–65536 bytes')
+                result = create_draft(db, json.loads(self.rfile.read(length)))
+                response = json.dumps(result).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(response)
+            except ValueError as error:
+                self.send_response(400)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(error)}).encode('utf-8'))
+            except Exception as error:
+                print(f'Drafting failed: {type(error).__name__}', flush=True)
+                self.send_error(502, 'Draft generation failed; current script was not changed')
+
+        elif self.path == '/api/research':
+            if not self.is_authenticated():
+                self.send_error(401, 'Unauthorized')
+                return
+            if db is None:
+                self.send_error(503, 'Research requires Firestore')
+                return
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length <= 4096:
+                    raise ValueError('Invalid request size')
+                body = json.loads(self.rfile.read(length))
+                if not isinstance(body, dict):
+                    raise ValueError('Expected a request object')
+                ids = body.get('videoIds')
+                if not isinstance(ids, list) or not 1 <= len(ids) <= 3 or not all(isinstance(v, str) for v in ids):
+                    raise ValueError('Select 1–3 videos per research request')
+                results = []
+                for video_id in dict.fromkeys(ids):
+                    try:
+                        results.append(analyze_video(db, video_id))
+                    except Exception as error:
+                        print(f'Research failed for {video_id}: {type(error).__name__}', flush=True)
+                        results.append({'videoId': video_id, 'status': 'error',
+                                        'reason': 'Caption retrieval or model analysis failed; no findings invented. Check service logs.'})
+                response = json.dumps({'results': results}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(response)
+            except (ValueError, TypeError):
+                self.send_error(400, 'Invalid research request')
+
         elif self.path == '/api/save':
             if not self.is_authenticated():
                 self.send_response(401)
@@ -136,7 +255,7 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 
                 # Write to Firestore if available
                 if db:
-                    db.collection('video_ideations').document(doc_id).set(payload, merge=True)
+                    save_with_history(db, doc_id, payload)
                 
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')

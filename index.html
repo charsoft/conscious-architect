@@ -166,7 +166,7 @@
               </span>
             </h3>
             <p class="text-xs text-slate-400 mt-1">
-              Videos performing 5x to 8x above their channel's rolling median baseline. Check 2 or more videos to blend their winning DNA.
+              Compare views against each channel's sampled median—not proof of what caused success. Music candidates are excluded; check freshness and format before selecting research.
             </p>
           </div>
 
@@ -233,13 +233,35 @@
             🔄 Reset Blueprint
           </button>
           <button onclick="recompileScriptFromStage2()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black font-bold text-xs rounded-xl shadow transition-all flex items-center space-x-1.5">
-            <span>⚡ Recompile Teleprompter Script</span>
+            <span>Format beats verbatim (no AI)</span>
           </button>
           <button onclick="setStage(3)" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded-xl border border-white/20 transition-all">
             <span>View Script ➔</span>
           </button>
         </div>
       </div>
+
+      <section class="bg-[#121622] border border-amber-500/30 rounded-2xl p-6 space-y-4">
+        <h4 class="text-amber-300 font-bold">Voice-guided drafting · seven-beat voice v1</h4>
+        <p class="text-xs text-slate-300">Get three original hook/title/keyword options, review their blueprints, then approve your beats to draft narration. Research is optional; suggestions without it are labeled editorial, not outlier findings.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="requestVoiceDraft('options')" class="px-4 py-2 bg-amber-600 rounded-xl text-sm">Suggest hooks &amp; blueprints</button>
+          <button onclick="requestVoiceDraft('narration')" class="px-4 py-2 bg-emerald-800 rounded-xl text-sm">Approve beats &amp; draft narration</button>
+          <button onclick="restorePreviousDraft()" class="px-4 py-2 bg-white/10 rounded-xl text-sm">Restore previous local version</button>
+        </div>
+        <p id="voiceDraftStatus" class="text-xs text-amber-200" role="status"></p>
+        <div id="voiceDraftPreview" class="space-y-4"></div>
+        <details ontoggle="if (this.open) loadResearchCapabilities()" class="border-t border-white/10 pt-3 space-y-3">
+          <summary>Missing captions? Transcribe an audio excerpt</summary>
+          <p class="text-xs text-slate-300">Select one radar video and upload a permitted PCM WAV excerpt (up to 8 MiB / 15 minutes). This uses Gemini 3.5 Transcribe with verbatim word timestamps. The audio is sent to Google; this app stores only the transcript and an audio hash.</p>
+          <input id="researchAudioFile" type="file" accept=".wav,audio/wav" class="block text-xs">
+          <label class="block text-xs">Excerpt starts at video second <input id="researchAudioOffset" type="number" min="0" max="86400" value="0" class="bg-black/30 w-24 p-1"></label>
+          <label class="block text-xs"><input id="researchAudioConsent" type="checkbox"> I can process this audio and confirm it matches the selected video.</label>
+          <label class="block text-xs"><input id="researchAudioReplace" type="checkbox"> Replace an existing transcript (its previous version will be archived).</label>
+          <button id="researchAudioButton" disabled onclick="uploadResearchAudio()" class="px-4 py-2 bg-white/10 rounded-lg text-sm disabled:opacity-40">Transcribe selected audio</button>
+          <p id="researchAudioStatus" class="text-xs text-amber-200" role="status">Disabled until Gemini 3.5 Transcribe access is verified for this project.</p>
+        </details>
+      </section>
 
       <!-- Beat 1: Cold Open (0:00 - 0:20) -->
       <div class="bg-[#0e121a] border border-white/10 rounded-2xl p-6 space-y-3">
@@ -1004,7 +1026,10 @@
         status: "script_refined",
         lastUpdated: new Date().toISOString(),
         stage2_signatureJourney: s2,
-        stage3_masterScript: fullScript
+        stage3_masterScript: fullScript,
+        stage3: s3,
+        lastDraftId: currentVideo.lastDraftId || null,
+        researchIds: currentVideo.researchIds || []
       };
 
       const studioKey = localStorage.getItem("tca_studio_key") || "";
@@ -1044,13 +1069,20 @@
         div.className = "p-6 bg-[#121622] rounded-2xl border border-white/10 space-y-3 shadow-xl";
         div.innerHTML = `
           <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">${s.act}</span>
+            <span id="script-title-${idx}" class="text-xs font-bold text-amber-400 uppercase tracking-wider"></span>
             <span class="text-[10px] text-slate-400">Click text to edit</span>
           </div>
           <textarea id="script-block-${idx}" oninput="handleScriptBlockEdit(${idx}, this.value)" rows="12" class="w-full bg-[#090c12] border border-white/10 rounded-xl p-4 text-slate-200 text-sm leading-loose font-sans"></textarea>
         `;
         container.appendChild(div);
+        document.getElementById(`script-title-${idx}`).textContent = s.act;
         document.getElementById(`script-block-${idx}`).value = s.content;
+        if (s.notes) {
+          const notes = document.createElement('p');
+          notes.className = 'text-xs text-slate-400 whitespace-pre-wrap';
+          notes.textContent = 'Production notes (not spoken): ' + s.notes;
+          div.appendChild(notes);
+        }
       });
     }
 
@@ -1091,7 +1123,7 @@
               <label for="check-${o.id}" class="text-[10px] font-bold text-amber-300 cursor-pointer select-none">SELECT FOR COHORT</label>
             </div>
             <div class="absolute top-3 right-3 bg-amber-500/90 text-black font-extrabold text-xs px-2.5 py-1 rounded-full shadow-lg">
-              ${o.score}x Outlier 🔥
+              ${o.score}× sampled baseline
             </div>
             <div class="absolute bottom-2 left-3 bg-black/75 backdrop-blur px-2 py-0.5 rounded text-[10px] text-amber-300 font-medium">
               ${o.pillar}
@@ -1100,6 +1132,8 @@
           <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
             <div class="space-y-1.5">
               <span class="text-xs text-slate-400 font-medium">${o.channel} (${o.handle})</span>
+              <p class="text-[10px] text-amber-200">${o.freshnessLabel || 'Curated example — freshness unverified'} · ${o.formatGroup || 'Format unverified'} · ${o.contentType || 'Analysis unverified'}</p>
+              <p class="text-[10px] text-slate-400">${o.scoreBasis === 'matched_age_duration_content' ? 'Age/duration/content-matched peers' : 'Unadjusted sample — not age/format normalized'} · sample: ${o.baselineSampleSize || 'unknown'}</p>
               <h4 class="text-sm font-semibold text-white leading-snug line-clamp-2">${o.title}</h4>
             </div>
             <div class="space-y-3 pt-2 border-t border-white/5">
@@ -1159,132 +1193,63 @@
       }
     }
 
-    function synthesizeSelectedCohort() {
-      if (selectedIds.size === 0) return;
-      const selectedVideos = Array.from(selectedIds)
-        .map(id => OUTLIER_DATABASE.find(o => o.id === id))
-        .filter(Boolean);
+    let researchPending = false;
+    let lastResearchResults = [];
 
-      populateCohortDrawer(selectedVideos);
+    async function synthesizeSelectedCohort() {
+      if (researchPending) return;
+      if (selectedIds.size < 1 || selectedIds.size > 3) {
+        alert("Select 1?3 videos for caption-based research at a time.");
+        return;
+      }
+      const ids = Array.from(selectedIds);
+      researchPending = true;
+      lastResearchResults = [];
       openDrawer();
+      populateCohortDrawer([], "Loading captions and analyzing sources with Gemini. Cached results are reused. This may take a few minutes.");
+      try {
+        const response = await fetch('/api/research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('tca_studio_key') || '') },
+          body: JSON.stringify({videoIds: ids})
+        });
+        if (!response.ok) throw new Error('Research request failed (HTTP ' + response.status + ')');
+        const data = await response.json();
+        lastResearchResults = data.results || [];
+        populateCohortDrawer(lastResearchResults);
+      } catch (error) {
+        populateCohortDrawer([], error.message + '. No fallback findings were invented.');
+      } finally {
+        researchPending = false;
+      }
     }
 
-    function populateCohortDrawer(videos) {
-      document.getElementById('drawerCohortBadge').innerText = `Cohort Blend • ${videos.length} Videos Interrogated`;
-      document.getElementById('drawerTitle').innerText = "Master Cohort Synthesis & Video #1 Strategy";
-      document.getElementById('drawerSubtitle').innerText = `Synthesizing: ${videos.map(v => v.channel).join(' • ')}`;
-
-      document.getElementById('macroCoreFinding').innerText = 
-        `Across these ${videos.length} breakout outliers, the overarching driver of views is the 'Technology-to-Metaphysics Translation Law': Every single breakout used bleeding-edge scientific/computing vocabulary (Spatial Computing, Loophole, Neural Technology, Algorithm) to validate an ancient metaphysical truth (Science of Mind, Neville Goddard, Universal Law). This bypasses the viewer's skepticism and frames spiritual mastery as an exact science.`;
-
-      const sharedBeatsContainer = document.getElementById('macroSharedBeats');
-      sharedBeatsContainer.innerHTML = `
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 1: The Diagnosis of Frustration (0:00 - 1:30)</strong>
-          <p class="text-slate-400">All ${videos.length} videos open by declaring that common practice is failing (e.g. affirmations don't work, AI prompts hallucinate, time feels like an enemy). Nobody opened with pleasantries.</p>
-        </div>
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 2: The Inversion Principle (1:30 - 4:00)</strong>
-          <p class="text-slate-400">Every outlier flips the perceived causality: Consciousness isn't inside the body/machine; the body and machines are projections inside consciousness.</p>
-        </div>
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5 space-y-1">
-          <strong class="text-amber-300">Beat 3: The 3-Step Protocol (4:00 - 9:00)</strong>
-          <p class="text-slate-400">Pacing shifts from high-level philosophy into an actionable 3-part framework (Role, Constraints, Feedback).</p>
-        </div>
-      `;
-
-      const hookPatternsContainer = document.getElementById('macroHookPatterns');
-      hookPatternsContainer.innerHTML = `
-        <div class="p-3 bg-black/40 rounded-lg border border-white/5">
-          <strong class="text-amber-300">The Overlapping Formula:</strong>
-          <code class="text-amber-200 block mt-1 font-mono text-[11px]">[Stinging Diagnosis of Failure] + [Tech-Metaphor Inversion] + [Minister/Architect Authority]</code>
-        </div>
-      `;
-
-      document.getElementById('macroDeadZones').innerText = 
-        "Avoid generic 'feel good' affirmations without structural mechanics. Avoid dry Python/coding tutorials without spiritual depth. The magic is strictly in the direct, uncompromising collision of both worlds.";
-
-      const bricksList = document.getElementById('bricksContributorsList');
-      bricksList.innerHTML = '';
-      videos.forEach(v => {
-        const item = document.createElement('div');
-        item.className = "p-4 bg-[#141924] rounded-xl border border-white/5 space-y-2";
-        item.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-amber-400 font-bold">${v.channel} (${v.score}x Outlier)</span>
-            <span class="text-[10px] text-slate-400 font-mono">${v.pillar}</span>
-          </div>
-          <div class="text-white font-medium text-xs">${v.title}</div>
-          <div class="text-[11px] text-amber-200 bg-amber-500/10 p-2.5 rounded border border-amber-500/20">
-            <strong>Contributed Brick:</strong> ${v.brickContribution}
-          </div>
-        `;
-        bricksList.appendChild(item);
-      });
-
-      const pwContainer = document.getElementById('powerWordsCombined');
-      pwContainer.innerHTML = '';
-      const allPower = videos.flatMap(v => v.deconstruction.powerWords || []);
-      allPower.forEach(pw => {
-        const item = document.createElement('div');
-        item.className = "p-3 bg-[#141924] rounded-xl border border-white/5 space-y-1";
-        item.innerHTML = `
-          <div class="flex items-center justify-between text-[10px]">
-            <span class="text-slate-400 font-mono">Original: "${pw.original}"</span>
-            <span class="text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded font-bold">${pw.trigger}</span>
-          </div>
-          <div class="text-xs font-semibold text-amber-200">
-            ➔ Charlene's Level 3 Remix: "${pw.remix}"
-          </div>
-        `;
-        pwContainer.appendChild(item);
-      });
-
-      const titlesBox = document.getElementById('cohortTitles');
-      titlesBox.innerHTML = `
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#1 (Master Blend): The Real Reason Your AI Prompts (and Intentions) Keep Failing</span>
-          <button onclick="navigator.clipboard.writeText('The Real Reason Your AI Prompts (and Intentions) Keep Failing')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#2 (Contrarian Shock): Stop Blaming the AI: Why Your Mind is Hallucinating Your Life</span>
-          <button onclick="navigator.clipboard.writeText('Stop Blaming the AI: Why Your Mind is Hallucinating Your Life')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-        <div class="p-3 bg-[#111622] rounded-lg border border-white/5 flex items-center justify-between">
-          <span class="font-semibold text-white">#3 (The Architect Protocol): Prompt Engineering Your Reality: The Science of Mind Blueprint</span>
-          <button onclick="navigator.clipboard.writeText('Prompt Engineering Your Reality: The Science of Mind Blueprint')" class="text-[10px] text-amber-400 hover:underline">Copy</button>
-        </div>
-      `;
-
-      const hookScriptBox = document.getElementById('cohortHookScript');
-      hookScriptBox.innerHTML = `
-        <div class="p-3.5 bg-[#111622] rounded-lg border border-white/5 space-y-1.5">
-          <div class="text-amber-400 font-mono text-[10px] font-bold">[0:00 - 0:12] Visual: Fast cut between glitching prompt terminal and Charlene on the dawn summit</div>
-          <div class="text-slate-200 leading-relaxed font-serif text-xs">
-            "Have you noticed that almost everyone using AI complains about the exact same thing? 'It's hallucinating. It's giving me generic fluff.' And have you noticed spiritual seekers complain about the exact same thing with manifestation? 'Affirmations don't work. Outside forces are holding me back.'"
-          </div>
-        </div>
-        <div class="p-3.5 bg-[#111622] rounded-lg border border-white/5 space-y-1.5">
-          <div class="text-amber-400 font-mono text-[10px] font-bold">[0:12 - 0:30] Visual: Zoom in on Charlene smiling, turquoise pendant, golden blueprint lines tracing the sky</div>
-          <div class="text-slate-200 leading-relaxed font-serif text-xs">
-            "I'm Charlene Banks—licensed Science of Mind minister and cloud & AI architect. And here is the stinging truth nobody is telling you: Neither the AI nor the Universe is broken. Both systems are giving you the exact, mathematical reflection of your vague, unedited instructions. Today, we fix the prompt."
-          </div>
-        </div>
-      `;
-
-      const outlineBox = document.getElementById('cohortOutline');
-      outlineBox.innerHTML = `
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 1 (0:00 - 2:00): The Broken Mirror Diagnosis.</strong> Proving that prompt hallucinations and unfulfilled affirmations stem from identical causes.
-        </div>
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 2 (2:00 - 8:00): The 3 Core Parallels.</strong> (1) Garbage In, Garbage Out. (2) Negative Constraints. (3) The Iteration Dialogue.
-        </div>
-        <div class="p-2.5 bg-[#111622] rounded-lg border border-white/5 text-slate-300">
-          <strong>Act 3 (8:00 - End): The 60-Second Daily Prompt Protocol.</strong> How to compile your reality each morning and channel invitation.
-        </div>
-      `;
-
+    function populateCohortDrawer(results, status = "") {
+      const set = (id, value) => {
+        const el = document.getElementById(id);
+        el.textContent = value;
+        el.style.whiteSpace = 'pre-wrap';
+      };
+      const analyzed = results.filter(r => r.status === 'analyzed');
+      set('drawerCohortBadge', `${analyzed.length} sources analyzed`);
+      set('drawerTitle', 'Caption-backed research ? not proof of what caused views');
+      set('drawerSubtitle', 'Gemini 3.8 Flash ? source quotes verified against captions');
+      set('macroCoreFinding', status || analyzed.map(r => `${r.title}: ${r.analysis.summary}`).join('\n\n') || 'No usable analyses available.');
+      const patterns = analyzed.flatMap(r => r.analysis.patterns.map(p => ({...p, videoId:r.videoId, title:r.title})));
+      const format = p => `${p.title} [${p.start.toFixed(1)}s]\n${p.observation}\nEvidence: "${p.quote}"\nOriginal adaptation idea: ${p.adaptationIdea}\nhttps://www.youtube.com/watch?v=${p.videoId}&t=${Math.floor(p.start)}s`;
+      set('macroSharedBeats', patterns.filter(p => p.kind === 'structure' || p.kind === 'audience_problem').map(format).join('\n\n') || 'No verified structural findings.');
+      set('macroHookPatterns', patterns.filter(p => p.kind === 'hook').map(format).join('\n\n') || 'No verified hook findings.');
+      set('macroDeadZones', [
+        'Views are correlation, not evidence that a particular phrase caused success. Automatic captions can contain errors.',
+        ...results.filter(r => r.status !== 'analyzed').map(r => `${r.videoId}: ${r.reason}`),
+        ...analyzed.flatMap(r => [r.scope, ...r.analysis.cautions])
+      ].join('\n'));
+      set('bricksContributorsList', patterns.map(format).join('\n\n') || 'No evidence-backed notes yet.');
+      set('powerWordsCombined', patterns.filter(p => p.kind === 'keyword').map(format).join('\n\n') || 'No verified keyword findings.');
+      set('cohortTitles', 'Original title options follow approval of your message and voice guidelines. No canned suggestions are shown.');
+      set('cohortHookScript', 'Research is separate from spoken narration. Review the source-linked ideas before adapting them.');
+      set('cohortOutline', 'Your existing seven-beat blueprint and script have not been changed by this research.');
+      set('copyStatusText', analyzed.length ? 'Evidence-backed research ready to copy' : 'No verified research to copy yet');
       switchTab('macro');
     }
 
@@ -1315,32 +1280,12 @@
     }
 
     function copyMasterCohortBlueprint() {
-      const text = `=== THE CONSCIOUS ARCHITECT: MASTER COHORT LEGO BRICKS SYNTHESIS ===\n` +
-        `Videos Interrogated: ${selectedIds.size} Selected Outliers\n\n` +
-        `1. MACRO INTERSECTION FINDING:\n` +
-        `Across the selected outliers, the winning driver is the 'Technology-to-Metaphysics Translation Law': Every breakout used bleeding-edge scientific/computing vocabulary to validate an ancient metaphysical truth.\n\n` +
-        `2. MASTER TITLES:\n` +
-        `• #1: The Real Reason Your AI Prompts (and Intentions) Keep Failing\n` +
-        `• #2: Stop Blaming the AI: Why Your Mind is Hallucinating Your Life\n` +
-        `• #3: Prompt Engineering Your Reality: The Science of Mind Blueprint\n\n` +
-        `3. DUAL-LAYER HOOK SCRIPT (0:00 - 0:45):\n` +
-        `[Visual: Fast cut between glitching prompt terminal and Charlene on the dawn summit]\n` +
-        `"Have you noticed that almost everyone using AI complains about the exact same thing? 'It's hallucinating. It's giving me generic fluff.' And have you noticed spiritual seekers complain about the exact same thing with manifestation? 'Affirmations don't work. Outside forces are holding me back.'"\n\n` +
-        `[Visual: Zoom in on Charlene smiling, turquoise pendant, golden blueprint lines tracing the sky]\n` +
-        `"I'm Charlene Banks—licensed Science of Mind minister and cloud & AI architect. And here is the stinging truth nobody is telling you: Neither the AI nor the Universe is broken. Both systems are giving you the exact, mathematical reflection of your vague, unedited instructions. Today, we fix the prompt."\n\n` +
-        `4. 3-ACT VIDEO OUTLINE:\n` +
-        `Act 1 (0:00 - 2:00): The Broken Mirror Diagnosis (Hallucinations = Limiting Beliefs).\n` +
-        `Act 2 (2:00 - 8:00): The 3 Core Parallels (Garbage In/Garbage Out, Negative Constraints, Iterative Dialogue).\n` +
-        `Act 3 (8:00 - End): The 60-Second Daily Prompt Protocol & Call to Action.\n`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        const status = document.getElementById('copyStatusText');
-        status.innerText = "✅ Master Cohort Synthesis copied to clipboard!";
-        status.classList.add('text-emerald-400');
-        setTimeout(() => {
-          status.innerText = "Ready to export to Obsidian / Notion";
-          status.classList.remove('text-emerald-400');
-        }, 3000);
+      if (researchPending || !lastResearchResults.some(r => r.status === 'analyzed')) {
+        alert("Analyze sources first; there is no verified research to copy yet.");
+        return;
+      }
+      navigator.clipboard.writeText(JSON.stringify(lastResearchResults, null, 2)).then(() => {
+        document.getElementById('copyStatusText').textContent = 'Source-backed research copied';
       });
     }
 
@@ -1353,53 +1298,15 @@
       });
     }
 
-    // --- COHORT BLUEPRINT GENERATION (SAME SEVEN-BEAT SCHEMA) ---
+    // Research is reviewed separately and never pasted into spoken narration.
     function regenerateStagesFromCohort() {
-      if (selectedIds.size === 0) {
-        alert("Please select at least 1 or 2 outliers from the radar first!");
+      if (!lastResearchResults.some(r => r.status === 'analyzed')) {
+        alert("Analyze selected sources first. Then review original voice-guided options before changing your beats.");
         return;
       }
-      const selectedVideos = Array.from(selectedIds)
-        .map(id => OUTLIER_DATABASE.find(o => o.id === id)).filter(Boolean);
-      if (!selectedVideos.length) return;
-      if (!confirm("Replace the current Stage 2 blueprint and Stage 3 script with a cohort-based draft? Existing edits will be replaced.")) return;
-
-      const activeId = localStorage.getItem("tca_active_ideation_id") || LAUNCH_CATALOG[0].id;
-      const cat = getCatalog();
-      const current = cat.find(v => v.id === activeId) || LAUNCH_CATALOG[0];
-      const newStage2 = buildCohortBlueprint(selectedVideos, current);
-      const updatedScript = compileScriptFromBlueprint(newStage2, current.title, current.pillar);
-      localStorage.setItem(STORAGE_KEY_STAGE2, JSON.stringify(newStage2));
-      localStorage.setItem(STORAGE_KEY_STAGE3, JSON.stringify(updatedScript));
-      const idx = cat.findIndex(v => v.id === activeId);
-      if (idx !== -1) {
-        cat[idx].stage2 = newStage2;
-        cat[idx].stage3 = updatedScript;
-        localStorage.setItem(STORAGE_KEY_CATALOG, JSON.stringify(cat));
-      }
-      loadState();
       setStage(2);
-      showSaveBadge(`? Seven-beat draft created from ${selectedVideos.length} outliers. Review before recording.`);
-      syncToFirestore();
-    }
-
-    function buildCohortBlueprint(videos, current) {
-      // Deterministic drafting, not AI synthesis. Keep the active episode's
-      // structure and expose research as notes rather than invented testimony.
-      const base = { ...DEFAULT_STAGE2, ...(current.stage2 || {}) };
-      const research = videos.map(v => `${v.channel}: ${v.brickContribution || v.title || "Review selected source"}`).join("\n");
-      return {
-        pillar: current.pillar || base.pillar,
-        beat1: base.beat1 || "",
-        beat2: base.beat2 || "",
-        beat3: (base.beat3 || "") + "\n\n[COHORT RESEARCH NOTES ? adapt and fact-check before recording]\n" + research,
-        bridge_tech: base.bridge_tech || "",
-        bridge_limit: base.bridge_limit || "",
-        bridge_parallel: base.bridge_parallel || "",
-        beat5: base.beat5 || "",
-        beat6: base.beat6 || "",
-        beat7: base.beat7 || ""
-      };
+      closeDrawer();
+      requestVoiceDraft('options');
     }
 
     // --- NEW IDEATION CREATOR & MULTI-VIDEO CATALOG ---
@@ -1623,7 +1530,7 @@
         });
         if (!res.ok) return;
         const data = await res.json();
-        if (data.outliers && data.outliers.length > 0) {
+        if (Array.isArray(data.outliers)) {
           // Filter out low-view statistical noise (require at least 5,000 views)
           const liveScraped = data.outliers
             .filter(doc => (doc.currentViews || doc.views || 0) >= 5000)
@@ -1637,10 +1544,16 @@
                 views: doc.currentViews || doc.views || 0,
                 baseline: Math.round(doc.baselineViews || doc.baseline || 1000),
                 score: parseFloat(doc.outlierScore || doc.score || 1.0),
+                stale: doc.stale !== false,
+                freshnessLabel: doc.stale === false ? 'Updated within 7 days' : 'Stale / unknown update',
+                formatGroup: doc.formatGroup || 'unknown',
+                contentType: doc.contentType || 'unverified',
+                scoreBasis: doc.scoreBasis || 'legacy_unverified',
+                baselineSampleSize: doc.baselineSampleSize || null,
                 pillar: doc.pillar || "Conscious Architecture",
                 thumb: doc.thumbnailUrl || doc.thumb || `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`,
                 ytUrl: `https://www.youtube.com/watch?v=${vidId}`,
-                brickContribution: doc.brickContribution || `High-velocity pattern: ${doc.title.slice(0, 55)}...`,
+                brickContribution: doc.brickContribution || `High-velocity pattern: ${(doc.title || '').slice(0, 55)}...`,
                 deconstruction: doc.deconstruction || {
                   coreAngle: doc.title,
                   spokenHook: doc.title,
@@ -1656,13 +1569,15 @@
           // Merge curated flagship anchors with live scraped outliers
           const seen = new Set();
           const merged = [];
-          for (const item of [...CURATED_OUTLIERS, ...liveScraped]) {
-            if (!seen.has(item.id)) {
+          const excludedIds = new Set(data.excludedIds || []);
+          for (const id of excludedIds) selectedIds.delete(id);
+          for (const item of [...liveScraped, ...CURATED_OUTLIERS]) {
+            if (!seen.has(item.id) && !excludedIds.has(item.id)) {
               seen.add(item.id);
               merged.push(item);
             }
           }
-          merged.sort((a, b) => b.score - a.score);
+          merged.sort((a, b) => Number(a.stale !== false) - Number(b.stale !== false) || b.score - a.score);
           OUTLIER_DATABASE = merged;
           renderCards();
         }
@@ -1691,7 +1606,11 @@
               title: cloudItem.title,
               pillar: cloudItem.pillar || "The Architecture of Agency",
               stage2: cloudItem.stage2_signatureJourney || cloudItem.stage2,
-              stage3: cloudItem.stage3
+              stage3: cloudItem.stage3 || (cloudItem.stage3_masterScript
+                ? [{act: 'Saved script — legacy format', content: cloudItem.stage3_masterScript}]
+                : (cat[existingIdx]?.stage3 || [])),
+              lastDraftId: cloudItem.lastDraftId || cat[existingIdx]?.lastDraftId || null,
+              researchIds: cloudItem.researchIds || cat[existingIdx]?.researchIds || []
             };
             if (existingIdx !== -1) {
               cat[existingIdx] = { ...cat[existingIdx], ...itemData };
@@ -1721,5 +1640,6 @@
     fetchLiveOutliers();
     fetchCloudIdeations();
   </script>
+  <script src="draft-editor.js"></script>
 </body>
 </html>

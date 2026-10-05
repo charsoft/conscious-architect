@@ -22,9 +22,10 @@ function harness(approved = true) {
     getCatalog:()=>catalog, confirm:()=>approved, handleEdit:()=>captured++,
     renderScriptBlocks:v=>rendered=v, setStage:()=>{}, showSaveBadge:()=>{},
     syncToFirestore:()=>synced++, loadState:()=>{}, alert:()=>{},
+    lastResearchResults:[], requestVoiceDraft:()=>{}, closeDrawer:()=>{},
     selectedIds:new Set(['source']), OUTLIER_DATABASE:[{id:'source',channel:'Research',brickContribution:'Insight'}]
   });
-  for (const name of ['compileScriptFromBlueprint','recompileScriptFromStage2','buildCohortBlueprint','regenerateStagesFromCohort']) vm.runInContext(fn(name), context);
+  for (const name of ['compileScriptFromBlueprint','recompileScriptFromStage2','regenerateStagesFromCohort']) vm.runInContext(fn(name), context);
   return {context,store,catalog,state:()=>({rendered,synced,captured})};
 }
 test('all inline JavaScript parses; only one compiler handler exists',()=>{
@@ -44,15 +45,18 @@ test('cancelled recompile preserves script and does not sync',()=>{
   const h=harness(false), before=h.store.get('s3'); h.context.recompileScriptFromStage2();
   assert.equal(h.store.get('s3'),before); assert.equal(h.state().synced,0); assert.equal(h.state().captured,0);
 });
-test('cohort generator uses current schema and persists both stages',()=>{
-  const h=harness(); h.context.regenerateStagesFromCohort();
-  const s2=JSON.parse(h.store.get('s2')), s3=JSON.parse(h.store.get('s3'));
-  for(const field of fields) assert.equal(typeof s2[field],'string');
-  assert.ok(s2.beat3.includes('Research: Insight'));
-  assert.equal(s3.length,7); assert.ok(!JSON.stringify(s3).includes('undefined'));
-  assert.equal(h.catalog[0].stage2.beat3,s2.beat3); assert.equal(h.state().synced,1);
+test('cohort adaptation requests a preview without changing beats or narration',()=>{
+  const h=harness(), before=JSON.stringify([...h.store]);
+  h.context.lastResearchResults=[{status:'analyzed'}];
+  let action;
+  h.context.requestVoiceDraft=v=>action=v;
+  h.context.regenerateStagesFromCohort();
+  assert.equal(action,'options'); assert.equal(JSON.stringify([...h.store]),before);
+  assert.equal(h.state().synced,0);
 });
-test('cancelled cohort regeneration preserves both stages',()=>{
-  const h=harness(false), before=JSON.stringify([...h.store]); h.context.regenerateStagesFromCohort();
+test('cohort adaptation without verified findings preserves both stages',()=>{
+  const h=harness(), before=JSON.stringify([...h.store]);
+  h.context.requestVoiceDraft=()=>{throw new Error('Unexpected AI request');};
+  h.context.regenerateStagesFromCohort();
   assert.equal(JSON.stringify([...h.store]),before); assert.equal(h.state().synced,0);
 });

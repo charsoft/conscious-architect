@@ -1,8 +1,9 @@
 import yt_dlp
-import numpy as np
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from content_policy import classify
+from radar_scoring import score_entries
 from google.cloud import firestore
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "gen-lang-client-0182092372")
@@ -25,7 +26,7 @@ CHANNELS = [
 def run_daily_sync():
     print(f"[{datetime.now().isoformat()}] Starting Daily Outlier Ingestion on {PROJECT_ID}...")
     today_str = datetime.now().strftime('%Y-%m-%d')
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(timezone.utc).isoformat()
     
     ydl_opts = {
         'extract_flat': True,
@@ -51,8 +52,15 @@ def run_daily_sync():
             if not entries:
                 continue
                 
-            views_list = [e.get('view_count', 0) for e in entries if e.get('view_count')]
-            median_views = max(1000.0, float(np.median(views_list))) if views_list else 1000.0
+            entries = list(entries)
+            refs = [db.collection('trend_videos').document(e['id']) for e in entries if e.get('id')]
+            previous = {snapshot.id: snapshot for snapshot in db.get_all(refs)} if refs else {}
+            for entry in entries:
+                prior = previous.get(entry.get('id'))
+                old = prior.to_dict() if prior and prior.exists else {}
+                entry['radarOverride'] = old.get('radarOverride')
+                entry['upload_date'] = entry.get('upload_date') or old.get('publishedAt', '')
+            scores = score_entries(entries)
 
             for e in entries:
                 vid = e.get('id')
@@ -65,10 +73,11 @@ def run_daily_sync():
                     continue
 
                 duration = int(e.get('duration') or 0)
-                outlier_score = round(views / median_views, 2) if median_views > 0 else 1.0
+                score = scores[vid]
+                outlier_score = score['outlierScore']
                 
                 doc_ref = db.collection('trend_videos').document(vid)
-                doc_snap = doc_ref.get()
+                doc_snap = previous[vid]
                 
                 delta_views = 0
                 if doc_snap.exists:
@@ -87,10 +96,11 @@ def run_daily_sync():
                     'thumbnailUrl': e.get('thumbnail') or f"https://i.ytimg.com/vi/{vid}/maxresdefault.jpg",
                     'descriptionSnippet': (e.get('description') or "")[:1000],
                     'currentViews': views,
-                    'baselineViews': median_views,
-                    'outlierScore': outlier_score,
-                    'lastUpdated': now_iso
+                    **score,
+                    'lastUpdated': now_iso,
+                    **classify(e.get('title', ''))
                 }
+                # Human radarOverride fields are deliberately not overwritten.
                 doc_ref.set(video_payload, merge=True)
                 
                 # Daily snapshot

@@ -1,0 +1,39 @@
+{
+  "version": "voice-v1",
+  "approvedAt": "2026-10-05",
+  "source": "Owner-approved newer seven-beat versions, not legacy Firestore scripts",
+  "references": [
+    {
+      "id": "video-1-stop-living-by-default",
+      "title": "You Are the Architect: Stop Living by Default",
+      "stage2": {
+        "pillar": "The Architecture of Agency",
+        "beat1": "You may be working incredibly hard on a life you have not actually designed. The issue is not that you lack potential. The issue is that your attention keeps being spent on someone else’s priorities. In this video, we begin architecting what actually matters.",
+        "beat2": "Most of us were taught to work hard. Far fewer of us were taught to step back, look at the whole system, set clear constraints, and revise with compassion. So we wake up exhausted, executing everyone else's blueprint while our own deepest intentions remain on the back burner. I'm Charlene Banks. In my day job, I train enterprise technical teams on complex cloud and AI architectures. But on Sundays, I serve as a Science of Mind minister. And what I've discovered in both rooms is that a life—just like a computer system—will default to chaos unless someone consciously architects it.",
+        "beat3": "In systems architecture, if you build a high-speed pipeline on top of a fragmented data structure, all you do is accelerate your errors. Speed without conscious architecture isn't progress—it's high-velocity chaos.",
+        "bridge_tech": "A software system only does what its underlying architecture permits, regardless of how fast the server runs.",
+        "bridge_limit": "Human life is not a machine, and no amount of life-hacking gives us control over grief, sudden change, or other people's choices.",
+        "bridge_parallel": "But seeing your life as a living system changes how you participate: what you say yes to, where your attention flows, and what structures you put in place to protect your energy.",
+        "beat5": "Where am I living by default right now? Choose ONE area this week: Schedule, Boundaries, or Creative Work. Name one small design decision you can make in the next 7 days.",
+        "beat6": "When I was consulting for massive tech enterprises, I watched leaders with $100M budgets completely burn out because their tools were modern but their personal life architecture was running on outdated default settings from twenty years ago.",
+        "beat7": "This week, stop reacting to the default settings of the world around you. You are the architect. Next Wednesday, we dive into what generative AI taught me about clarity—and why vague intentions produce chaotic lives."
+      }
+    },
+    {
+      "id": "video-2-ai-clarity",
+      "title": "What Generative AI Taught Me About Clarity",
+      "stage2": {
+        "pillar": "Technology as Mirror",
+        "beat1": "If your life has been giving you vague results, it may not be because you are lazy, unworthy, or incapable. It may be because you have never had the space—or the permission—to become clear about what you really want. In this video, we fix the prompt.",
+        "beat2": "Most people spend years working furiously, wondering why their goals never quite materialize. Vague intentions create vague realities—not because the universe is punishing you, but because clarity hasn't been designed. As an AI educator, I teach people every day that vague prompts yield generic slop. But as a minister, I see the exact same law at work in human hearts: vague intentions create chaotic drift. Today, we fix the prompt.",
+        "beat3": "Watch what happens when someone types 'Write something about leadership' into an AI model: you get generic corporate cardboard. But when you specify the role, context, constraints, and exact outcome, the result is sharp and usable.",
+        "bridge_tech": "A generative AI model produces stronger results when the request includes a clear goal, relevant context, examples, and constraints.",
+        "bridge_limit": "Human lives are not prompts, and no amount of positive thinking gives us total control over illness, injustice, grief, timing, or other people.",
+        "bridge_parallel": "But in both cases, clarity affects participation: what we notice, how we organize our choices, which support we seek, and what action becomes possible next.",
+        "beat5": "The 5-Part 'Life Prompt':\n1. Outcome: What do I want to create or change in the next 30 days?\n2. Context: What is true about my situation right now?\n3. Values: What non-negotiables must I protect?\n4. First Action: What is one concrete step in the next 7 days?\n5. Review Date: When will I pause, learn, and revise?",
+        "beat6": "In my Google training classes, students often panic when their prompts return slop. I tell them: 'Don't yell at the screen. Look at your prompt. Where did you leave the door open?' The moment they get specific, the model falls into line.",
+        "beat7": "Your life is not waiting for a perfect prompt. It is waiting for your conscious participation. Next week, we tackle why the prompt is not the practice—and why intention without systems is just wishful thinking."
+      }
+    }
+  ]
+}
