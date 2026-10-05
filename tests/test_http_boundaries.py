@@ -1,4 +1,7 @@
 import http.client
+import json
+from datetime import datetime, timezone
+from types import SimpleNamespace
 import threading
 import unittest
 from http.server import HTTPServer
@@ -40,6 +43,29 @@ class HTTPBoundaryTests(unittest.TestCase):
     def test_paid_endpoints_require_authentication(self):
         for path in ('/api/draft','/api/research','/api/transcribe'):
             self.assertEqual(self.request(path,method='POST')[0],401)
+
+    def test_fresh_low_scores_do_not_hide_older_eligible_candidates(self):
+        fresh = datetime.now(timezone.utc).isoformat()
+        records = [{'id':f'fresh{i:06}', 'title':'Spoken teaching',
+                    'outlierScore':1, 'currentViews':10000, 'lastUpdated':fresh}
+                   for i in range(70)]
+        records.append({'id':'older_video', 'title':'Older spoken teaching',
+                        'outlierScore':12, 'currentViews':50000,
+                        'lastUpdated':'2020-01-01T00:00:00+00:00'})
+        records.append({'id':'music_video', 'title':'Binaural beats',
+                        'outlierScore':100, 'lastUpdated':fresh})
+        snapshots = [SimpleNamespace(id=record['id'], to_dict=lambda r=record:dict(r))
+                     for record in records]
+        fake_db = SimpleNamespace(collection=lambda name:SimpleNamespace(stream=lambda:snapshots))
+        with patch.object(server,'STUDIO_PASSKEY','test-only'), patch.object(server,'db',fake_db):
+            status,body = self.request('/api/outliers',headers={'Authorization':'Bearer test-only'})
+        self.assertEqual(status,200)
+        payload = json.loads(body)
+        self.assertEqual(len(payload['outliers']),71)
+        self.assertIn('older_video',[v['videoId'] for v in payload['outliers']])
+        self.assertNotIn('music_video',[v['videoId'] for v in payload['outliers']])
+        self.assertIn('music_video',payload['excludedIds'])
+        self.assertTrue(next(v for v in payload['outliers'] if v['videoId']=='older_video')['stale'])
 
     def test_transcription_disabled_by_default(self):
         with patch.object(server,'STUDIO_PASSKEY','test-only'),patch.dict(server.os.environ,{'TRANSCRIPTION_ENABLED':'false'}):

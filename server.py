@@ -69,7 +69,8 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                 return
 
             try:
-                # Filter before limiting so music cannot crowd out eligible results.
+                # Return every eligible candidate: the browser applies score/view filters.
+                # A freshness-first cutoff would hide older high-scoring videos.
                 docs = db.collection('trend_videos').stream()
                 outliers, excluded_ids = [], []
                 for snapshot in docs:
@@ -79,7 +80,6 @@ class ConsciousArchitectHandler(http.server.SimpleHTTPRequestHandler):
                     else:
                         outliers.append(annotate(video))
                 outliers.sort(key=lambda v: (v['stale'], -(v.get('outlierScore') or 0)))
-                outliers = outliers[:50]
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
